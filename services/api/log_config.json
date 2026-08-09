@@ -1,0 +1,35 @@
+[
+  {
+    "version": 1,
+    "disable_existing_loggers": false,
+    "formatters": {
+      "json": {
+        "()": "structlog.stdlib.ProcessorFormatter",
+        "processors": [
+          "structlog.contextvars.merge_contextvars",
+          "structlog.processors.add_log_level",
+          "structlog.processors.TimeStamper",
+          "structlog.stdlib.add_logger_name",
+          "structlog.processors.JSONRenderer"
+        ]
+      }
+    },
+    "handlers": {
+      "console": {
+        "class": "logging.StreamHandler",
+        "formatter": "json",
+        "stream": "ext://sys.stdout"
+      }
+    },
+    "loggers": {
+      "uvicorn": { "handlers": ["console"], "level": "INFO", "propagate": false },
+      "uvicorn.error": { "handlers": ["console"], "level": "ERROR", "propagate": false },
+      "uvicorn.access": { "handlers": ["console"], "level": "INFO", "propagate": false },
+      "sqlalchemy.engine": { "handlers": ["console"], "level": "WARNING", "propagate": false }
+    },
+    "root": {
+      "handlers": ["console"],
+      "level": "INFO"
+    }
+  }
+]

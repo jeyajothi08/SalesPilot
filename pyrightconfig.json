@@ -1,0 +1,16 @@
+{
+  "executionEnvironments": [
+    {
+      "root": "backend",
+      "extraPaths": ["backend"]
+    },
+    {
+      "root": "services/api",
+      "extraPaths": ["services/api"]
+    }
+  ],
+  "extraPaths": [
+    "backend",
+    "services/api"
+  ]
+}

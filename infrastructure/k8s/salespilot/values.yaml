@@ -1,0 +1,56 @@
+replicaCount: 2
+
+frontend:
+  image:
+    repository: <AWS_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/salespilot
+    tag: frontend-latest
+  resources:
+    limits:
+      cpu: 500m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+backend:
+  image:
+    repository: <AWS_ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/salespilot
+    tag: backend-latest
+  env:
+    DATABASE_URL: "postgresql+asyncpg://user:pass@salespilot-db.cluster.us-east-1.rds.amazonaws.com/salespilot"
+    REDIS_URL: "redis://salespilot-redis.cluster.cache.amazonaws.com:6379/0"
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1024Mi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+  hosts:
+    - host: app.salespilot.ai
+      paths:
+        - path: /api
+          pathType: Prefix
+          backend:
+            service:
+              name: salespilot-backend
+              port:
+                number: 8000
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: salespilot-frontend
+              port:
+                number: 80
+  tls:
+    - secretName: salespilot-tls
+      hosts:
+        - app.salespilot.ai

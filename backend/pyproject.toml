@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "salespilot-api"
+version = "1.0.0"
+description = "SalesPilot AI FastAPI Backend"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "sqlalchemy",
+    "pydantic",
+    "pytest",
+    "pytest-asyncio"
+]
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "."
+]
+asyncio_mode = "auto"
+testpaths = [
+    "tests",
+]

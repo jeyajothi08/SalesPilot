@@ -1,0 +1,192 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-ds-background: var(--ds-background);
+  --color-ds-surface: var(--ds-surface);
+  --color-ds-surface-hover: var(--ds-surface-hover);
+  --color-ds-surface-glass: var(--ds-surface-glass);
+  
+  --color-ds-text-primary: var(--ds-text-primary);
+  --color-ds-text-secondary: var(--ds-text-secondary);
+  --color-ds-text-tertiary: var(--ds-text-tertiary);
+  --color-ds-border: var(--ds-border);
+  --color-ds-border-strong: var(--ds-border-strong);
+  
+  --color-ds-primary: var(--ds-primary);
+  --color-ds-primary-hover: var(--ds-primary-hover);
+  --color-ds-primary-glass: var(--ds-primary-glass);
+  
+  --color-ds-accent: var(--ds-accent);
+  --color-ds-accent-hover: var(--ds-accent-hover);
+  --color-ds-accent-glass: var(--ds-accent-glass);
+  
+  --color-ds-success: var(--ds-success);
+  --color-ds-success-bg: var(--ds-success-bg);
+  --color-ds-warning: var(--ds-warning);
+  --color-ds-warning-bg: var(--ds-warning-bg);
+  --color-ds-danger: var(--ds-danger);
+  --color-ds-danger-bg: var(--ds-danger-bg);
+  --color-ds-info: var(--ds-info);
+  --color-ds-info-bg: var(--ds-info-bg);
+
+  /* Typography */
+  --font-ds: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  
+  /* Radii */
+  --radius-ds-sm: 8px;
+  --radius-ds-md: 12px;
+  --radius-ds-lg: 16px;
+  --radius-ds-xl: 24px;
+  --radius-ds-2xl: 32px;
+  --radius-ds-full: 9999px;
+  
+  /* Shadows */
+  --shadow-ds-sm: 0 2px 8px var(--ds-shadow-color);
+  --shadow-ds-md: 0 4px 16px var(--ds-shadow-color);
+  --shadow-ds-lg: 0 12px 32px var(--ds-shadow-color);
+  --shadow-ds-glass: 0 8px 32px rgba(0, 0, 0, 0.04);
+  --shadow-ds-glow-primary: 0 0 24px var(--ds-primary-glass);
+}
+
+:root {
+  /* LIGHT MODE TOKENS */
+  --ds-background: #FAFAFA;
+  --ds-surface: #FFFFFF;
+  --ds-surface-hover: #F4F4F5;
+  --ds-surface-glass: rgba(255, 255, 255, 0.7);
+  
+  --ds-text-primary: #09090B;
+  --ds-text-secondary: #52525B;
+  --ds-text-tertiary: #A1A1AA;
+  
+  --ds-border: rgba(0, 0, 0, 0.08);
+  --ds-border-strong: rgba(0, 0, 0, 0.15);
+  
+  --ds-primary: #18181B;
+  --ds-primary-hover: #27272A;
+  --ds-primary-glass: rgba(24, 24, 27, 0.1);
+  
+  --ds-accent: #2563EB;
+  --ds-accent-hover: #1D4ED8;
+  --ds-accent-glass: rgba(37, 99, 235, 0.15);
+  
+  --ds-success: #10B981;
+  --ds-success-bg: rgba(16, 185, 129, 0.1);
+  --ds-warning: #F59E0B;
+  --ds-warning-bg: rgba(245, 158, 11, 0.1);
+  --ds-danger: #EF4444;
+  --ds-danger-bg: rgba(239, 68, 68, 0.1);
+  --ds-info: #3B82F6;
+  --ds-info-bg: rgba(59, 130, 246, 0.1);
+  
+  --ds-shadow-color: rgba(0, 0, 0, 0.04);
+  
+  /* Fallbacks for older components */
+  --theme-bg-primary: var(--ds-surface);
+  --theme-bg-secondary: var(--ds-background);
+  --theme-text-main: var(--ds-text-primary);
+  --theme-text-muted: var(--ds-text-secondary);
+  --theme-border: var(--ds-border);
+  --theme-glass-bg: var(--ds-surface-glass);
+}
+
+.dark {
+  /* DARK MODE TOKENS */
+  --ds-background: #000000;
+  --ds-surface: #0A0A0A;
+  --ds-surface-hover: #171717;
+  --ds-surface-glass: rgba(20, 20, 20, 0.6);
+  
+  --ds-text-primary: #FFFFFF;
+  --ds-text-secondary: #A1A1AA;
+  --ds-text-tertiary: #52525B;
+  
+  --ds-border: rgba(255, 255, 255, 0.1);
+  --ds-border-strong: rgba(255, 255, 255, 0.2);
+  
+  --ds-primary: #FFFFFF;
+  --ds-primary-hover: #E4E4E7;
+  --ds-primary-glass: rgba(255, 255, 255, 0.1);
+  
+  --ds-accent: #3B82F6;
+  --ds-accent-hover: #60A5FA;
+  --ds-accent-glass: rgba(59, 130, 246, 0.15);
+  
+  --ds-success: #10B981;
+  --ds-success-bg: rgba(16, 185, 129, 0.15);
+  --ds-warning: #F59E0B;
+  --ds-warning-bg: rgba(245, 158, 11, 0.15);
+  --ds-danger: #EF4444;
+  --ds-danger-bg: rgba(239, 68, 68, 0.15);
+  --ds-info: #3B82F6;
+  --ds-info-bg: rgba(59, 130, 246, 0.15);
+  
+  --ds-shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+body {
+  background-color: var(--ds-background);
+  color: var(--ds-text-primary);
+  font-family: var(--font-ds);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--ds-border-strong);
+  border-radius: 10px;
+}
+
+/* Base Glassmorphism (Fallback for old components) */
+.glass-card {
+  background: var(--ds-surface-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--ds-border);
+  box-shadow: var(--shadow-ds-glass);
+  border-radius: var(--radius-ds-xl);
+}
+
+/* ── React Flow CSS safety overrides ──────────────────────────────────────── */
+/* Tailwind v4 preflight can strip critical React Flow styles. These ensure   */
+/* the canvas, nodes, handles, and edges render and interact correctly.       */
+.react-flow {
+  width: 100%;
+  height: 100%;
+}
+
+.react-flow__renderer,
+.react-flow__viewport {
+  width: 100%;
+  height: 100%;
+}
+
+/* Prevent Tailwind's border-style reset from breaking SVG edges */
+.react-flow__edges svg {
+  overflow: visible;
+}
+
+/* Ensure handles are interactive and not hidden behind node content */
+.react-flow__handle {
+  pointer-events: all;
+  position: absolute;
+  z-index: 10;
+}
+
+/* Ensure controls panel is interactive */
+.react-flow__controls {
+  pointer-events: all;
+}
+
+.react-flow__controls button {
+  pointer-events: all;
+}

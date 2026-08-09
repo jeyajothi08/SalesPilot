@@ -1,0 +1,206 @@
+# ============================================================
+# SalesPilot AI — Development docker-compose.yml
+# Full local stack: API, Worker, Frontend, PostgreSQL, Redis
+# Usage: docker compose up --build
+# ============================================================
+
+version: '3.9'
+
+x-backend-env: &backend-env
+  DATABASE_URL: postgresql+asyncpg://salespilot:password@postgres:5432/salespilot_db
+  REDIS_URL: redis://redis:6379/0
+  CELERY_BROKER_URL: redis://redis:6379/0
+  CELERY_RESULT_BACKEND: redis://redis:6379/1
+  # SECURITY: Change SECRET_KEY before any deployment
+  SECRET_KEY: ${SECRET_KEY:-dev-secret-key-DO-NOT-USE-IN-PRODUCTION-change-this}
+  ENVIRONMENT: development
+  OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+  SENDGRID_API_KEY: ${SENDGRID_API_KEY:-}
+  TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID:-}
+  TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN:-}
+  TWILIO_PHONE_NUMBER: ${TWILIO_PHONE_NUMBER:-}
+  STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+  STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+  RAZORPAY_KEY_ID: ${RAZORPAY_KEY_ID:-}
+  RAZORPAY_KEY_SECRET: ${RAZORPAY_KEY_SECRET:-}
+  RAZORPAY_WEBHOOK_SECRET: ${RAZORPAY_WEBHOOK_SECRET:-}
+  FRONTEND_URL: http://localhost:5173
+
+services:
+  # ── PostgreSQL ───────────────────────────────────────────────
+  postgres:
+    image: postgres:15-alpine
+    container_name: sp_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: salespilot
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: salespilot_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U salespilot -d salespilot_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - salespilot_network
+
+  # ── Redis ────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: sp_redis
+    restart: unless-stopped
+    command: redis-server --maxmemory 256mb --maxmemory-policy allkeys-lru --save 60 1
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - salespilot_network
+
+  # ── Database Migrations ──────────────────────────────────────
+  # FIXED: was `python create_tables.py` — now uses Alembic for proper migration tracking
+  migrator:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/backend.Dockerfile
+      target: runtime
+    container_name: sp_migrator
+    environment:
+      <<: *backend-env
+    # Run Alembic migrations then exit
+    command: sh -c "alembic upgrade head && echo '✅ Migrations complete'"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: on-failure
+    networks:
+      - salespilot_network
+
+  # ── Backend API ──────────────────────────────────────────────
+  api:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/backend.Dockerfile
+      target: runtime
+    container_name: sp_api
+    restart: unless-stopped
+    environment:
+      <<: *backend-env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app:cached   # Hot reload in dev
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      migrator:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - salespilot_network
+
+  # ── Celery Worker ────────────────────────────────────────────
+  worker:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/celery.Dockerfile
+    container_name: sp_worker
+    restart: unless-stopped
+    environment:
+      <<: *backend-env
+    volumes:
+      - ./backend:/app:cached
+    command: celery -A app.worker worker --loglevel=info --concurrency=2
+    depends_on:
+      - api
+      - redis
+    networks:
+      - salespilot_network
+
+  # ── Celery Beat (Scheduler) ──────────────────────────────────
+  # FIXED: removed `django_celery_beat.schedulers:DatabaseScheduler` — this is a Django plugin
+  # Using redbeat for Redis-based distributed scheduling instead
+  beat:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/celery.Dockerfile
+    container_name: sp_beat
+    restart: unless-stopped
+    environment:
+      <<: *backend-env
+      REDBEAT_REDIS_URL: redis://redis:6379/1
+    volumes:
+      - ./backend:/app:cached
+    # FIXED: standard PersistentScheduler (no Django dependency)
+    command: celery -A app.worker beat --loglevel=info --scheduler celery.beat:PersistentScheduler
+    depends_on:
+      - worker
+    networks:
+      - salespilot_network
+
+  # ── Frontend ─────────────────────────────────────────────────
+  web:
+    build:
+      context: .
+      dockerfile: infrastructure/docker/frontend.Dockerfile
+      target: builder
+    container_name: sp_web
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./apps/web:/app:cached
+      - /app/node_modules
+    command: npm run dev -- --host 0.0.0.0 --port 5173
+    environment:
+      VITE_API_URL: http://localhost:8000
+      VITE_APP_ENV: development
+    depends_on:
+      - api
+    networks:
+      - salespilot_network
+
+  # ── Flower (Celery Monitoring) ───────────────────────────────
+  flower:
+    image: mher/flower:2.0
+    container_name: sp_flower
+    restart: unless-stopped
+    environment:
+      CELERY_BROKER_URL: redis://redis:6379/0
+      FLOWER_PORT: 5555
+    ports:
+      - "5555:5555"
+    depends_on:
+      - redis
+      - worker
+    networks:
+      - salespilot_network
+
+volumes:
+  pgdata:
+    name: salespilot_pgdata
+  redisdata:
+    name: salespilot_redisdata
+
+networks:
+  salespilot_network:
+    name: salespilot_network
+    driver: bridge
