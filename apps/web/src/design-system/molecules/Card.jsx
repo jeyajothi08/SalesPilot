@@ -26,6 +26,7 @@ export const Card = ({
 
   const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["7deg", "-7deg"]);
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-7deg", "7deg"]);
+  const shineOpacity = useTransform(mouseYSpring, [-0.5, 0.5], [0, 0.15]);
 
   const handleMouseMove = (e) => {
     if (variant !== 'interactive' && !onClick) return;
@@ -65,8 +66,8 @@ export const Card = ({
         {/* Subtle shine effect on interactive cards */}
         {(variant === 'interactive' || onClick) && (
           <motion.div 
-            style={{ opacity: useTransform(mouseYSpring, [-0.5, 0.5], [0, 0.15]) }}
-            className="absolute inset-0 bg-gradient-to-tr from-transparent via-white to-transparent pointer-events-none"
+            style={{ opacity: shineOpacity }}
+            className="absolute inset-0 bg-linear-to-tr from-transparent via-white to-transparent pointer-events-none"
           ></motion.div>
         )}
       

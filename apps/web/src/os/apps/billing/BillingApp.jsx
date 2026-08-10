@@ -7,6 +7,12 @@ export const BillingApp = ({ isActive, onClose, onFocus }) => {
     const [plans, setPlans] = useState([]);
     const [billingCycle, setBillingCycle] = useState('month');
     const [loading, setLoading] = useState(true);
+    const [toastMessage, setToastMessage] = useState(null);
+
+    const showToast = (msg) => {
+        setToastMessage(msg);
+        setTimeout(() => setToastMessage(null), 3000);
+    };
 
     useEffect(() => {
         const fetchPlans = async () => {
@@ -39,12 +45,12 @@ export const BillingApp = ({ isActive, onClose, onFocus }) => {
             if (gateway === 'stripe') {
                 window.location.href = res.data.url;
             } else {
-                alert(`Razorpay Order Created! ID: ${res.data.subscription_id}. Injecting Razorpay SDK to complete payment...`);
+                showToast(`Razorpay Order Created! ID: ${res.data.subscription_id}. Injecting Razorpay SDK to complete payment...`);
                 // Razorpay SDK logic would go here
             }
         } catch (e) {
             console.error("Checkout Failed:", e);
-            alert("Checkout Failed");
+            showToast(e.message === 'Network Error' ? "Backend Unreachable: Checkout Failed" : "Checkout Failed");
         }
     };
 
@@ -59,7 +65,12 @@ export const BillingApp = ({ isActive, onClose, onFocus }) => {
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-225 h-162.5 bg-black/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden z-40"
         >
             {/* Window Header */}
-            <div className="h-12 border-b border-white/10 flex items-center justify-between px-4 bg-white/5">
+            <div className="h-12 border-b border-white/10 flex items-center justify-between px-4 bg-white/5 relative">
+                {toastMessage && (
+                    <div className="absolute top-14 left-1/2 -translate-x-1/2 px-4 py-2 bg-blue-500/90 text-white text-sm font-medium rounded-xl shadow-lg z-50 whitespace-nowrap animate-in fade-in slide-in-from-top-4">
+                        {toastMessage}
+                    </div>
+                )}
                 <div className="flex items-center gap-2">
                     <FiCreditCard className="text-ds-accent" />
                     <span className="text-white font-semibold text-sm">Billing & Subscriptions</span>

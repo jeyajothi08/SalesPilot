@@ -11,6 +11,15 @@ export default function CampaignBuilder({ onBack }) {
     content: '',
     schedule: 'now'
   });
+  const [toastMessage, setToastMessage] = useState(null);
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => {
+      setToastMessage(null);
+      onBack();
+    }, 2000);
+  };
 
   const nextStep = () => setStep(prev => Math.min(prev + 1, 4));
   const prevStep = () => setStep(prev => Math.max(prev - 1, 1));
@@ -37,7 +46,12 @@ export default function CampaignBuilder({ onBack }) {
             <p className="text-gray-400 text-sm mt-1">Create and launch omnichannel campaigns</p>
           </div>
         </div>
-        <div className="flex space-x-3">
+        <div className="flex space-x-3 relative">
+          {toastMessage && (
+            <div className="absolute top-12 right-0 px-4 py-2 bg-green-500/90 text-white text-sm font-medium rounded-xl shadow-lg z-50 whitespace-nowrap">
+              {toastMessage}
+            </div>
+          )}
           <button className="px-4 py-2 bg-white/5 border border-white/10 text-white rounded-lg hover:bg-white/10 transition-colors flex items-center text-sm">
             <Save size={16} className="mr-2" />
             Save Draft
@@ -266,8 +280,7 @@ export default function CampaignBuilder({ onBack }) {
         ) : (
           <button
             onClick={() => {
-              alert('Campaign launched via AI Engine!');
-              onBack();
+              showToast('Campaign launched via AI Engine!');
             }}
             className="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center"
           >

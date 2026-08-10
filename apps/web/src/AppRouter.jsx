@@ -29,6 +29,7 @@ const MobileOS = lazy(() => import('./mobile/MobileOS'));
 const BrandBook = lazy(() => import('./pages/BrandBook'));
 const LoginPage = lazy(() => import('./pages/Login'));
 const RegisterPage = lazy(() => import('./pages/Register'));
+const DemoPage = lazy(() => import('./pages/DemoPage'));
 
 // ── Protected Route Guard ────────────────────────────────────────────────────
 const ProtectedRoute = ({ children }) => {
@@ -72,6 +73,7 @@ export const AppRouter = () => {
           <Route path="/automation" element={<AutomationPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/demo" element={<DemoPage />} />
           <Route path="/brand" element={<BrandBook />} />
 
           {/* Protected App Route */}

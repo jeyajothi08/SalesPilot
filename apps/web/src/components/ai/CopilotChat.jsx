@@ -44,7 +44,9 @@ export const CopilotChat = ({ onClose }) => {
       const errorDetail = error.response?.data?.detail;
       const errorMessage = typeof errorDetail === 'string' 
         ? errorDetail 
-        : (errorDetail?.message || error.message || 'I encountered an error connecting to the AI Brain. Please try again later.');
+        : (error.message === 'Network Error' 
+            ? 'SalesPilot AI backend is currently unreachable. Please ensure the backend server is running.' 
+            : (errorDetail?.message || error.message || 'I encountered an error connecting to the AI Brain. Please try again later.'));
       setMessages(prev => [...prev, { 
         role: 'assistant', 
         content: `Connection issue: ${errorMessage}` 

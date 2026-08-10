@@ -1,7 +1,9 @@
 import React from 'react';
 import { Bot } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export const Footer = () => {
+  const navigate = useNavigate();
   return (
     <footer className="pt-20 pb-10 px-6 border-t border-white/5 bg-[#050505]">
       <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-10 mb-16">
@@ -25,28 +27,28 @@ export const Footer = () => {
         <div>
            <h4 className="font-semibold text-white mb-4 text-sm">Product</h4>
            <ul className="space-y-3">
-              <li><a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Features</a></li>
-              <li><a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Integrations</a></li>
-              <li><a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Pricing</a></li>
-              <li><a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Changelog</a></li>
+              <li><button onClick={() => navigate('/features')} className="text-gray-500 hover:text-white text-sm transition-colors cursor-pointer bg-transparent border-none p-0 text-left">Features</button></li>
+              <li><span className="text-gray-700 text-sm cursor-not-allowed">Integrations (Coming Soon)</span></li>
+              <li><button onClick={() => navigate('/pricing')} className="text-gray-500 hover:text-white text-sm transition-colors cursor-pointer bg-transparent border-none p-0 text-left">Pricing</button></li>
+              <li><span className="text-gray-700 text-sm cursor-not-allowed">Changelog</span></li>
            </ul>
         </div>
         
         <div>
            <h4 className="font-semibold text-white mb-4 text-sm">Resources</h4>
            <ul className="space-y-3">
-              <li><a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Documentation</a></li>
-              <li><a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Blog</a></li>
-              <li><a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Community</a></li>
-              <li><a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Contact</a></li>
+              <li><span className="text-gray-700 text-sm cursor-not-allowed">Documentation</span></li>
+              <li><span className="text-gray-700 text-sm cursor-not-allowed">Blog</span></li>
+              <li><span className="text-gray-700 text-sm cursor-not-allowed">Community</span></li>
+              <li><button onClick={() => navigate('/demo')} className="text-gray-500 hover:text-white text-sm transition-colors cursor-pointer bg-transparent border-none p-0 text-left">Contact</button></li>
            </ul>
         </div>
         
         <div>
            <h4 className="font-semibold text-white mb-4 text-sm">Legal</h4>
            <ul className="space-y-3">
-              <li><a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="text-gray-500 hover:text-white text-sm transition-colors">Terms of Service</a></li>
+              <li><span className="text-gray-700 text-sm cursor-not-allowed">Privacy Policy</span></li>
+              <li><span className="text-gray-700 text-sm cursor-not-allowed">Terms of Service</span></li>
            </ul>
         </div>
 

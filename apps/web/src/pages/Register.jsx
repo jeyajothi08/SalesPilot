@@ -84,7 +84,7 @@ const Register = () => {
 
           {error && (
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6 p-4 bg-red-50 border border-red-100 rounded-xl flex items-start space-x-3">
-               <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+               <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                <p className="text-sm text-red-700 font-medium">{error}</p>
             </motion.div>
           )}
@@ -217,7 +217,7 @@ const Register = () => {
             </div>
             
             <p className="text-xs text-text-muted text-center font-light mt-4">
-               By creating an account, you agree to our <a href="#" className="text-primary hover:underline">Terms of Service</a> and <a href="#" className="text-primary hover:underline">Privacy Policy</a>.
+               By creating an account, you agree to our <span className="text-primary hover:underline cursor-not-allowed">Terms of Service</span> and <span className="text-primary hover:underline cursor-not-allowed">Privacy Policy</span>.
             </p>
           </form>
 
@@ -233,8 +233,8 @@ const Register = () => {
 
       {/* Right Area - AI Illustration */}
       <div className="hidden lg:flex flex-1 relative bg-bg-secondary overflow-hidden items-center justify-center border-l border-border/50">
-        <div className="absolute top-[-10%] right-[-10%] w-[700px] h-[700px] bg-primary/20 rounded-full blur-[120px] opacity-70" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-accent-purple/20 rounded-full blur-[100px] opacity-70" />
+        <div className="absolute top-[-10%] right-[-10%] w-175 h-175 bg-primary/20 rounded-full blur-[120px] opacity-70" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-125 h-125 bg-accent-purple/20 rounded-full blur-[100px] opacity-70" />
         
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
@@ -242,7 +242,7 @@ const Register = () => {
           transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
           className="relative z-10 w-full max-w-lg glass-card bg-white/40 p-12 rounded-[40px] border border-white/60 shadow-2xl flex flex-col items-center text-center"
         >
-          <div className="w-32 h-32 rounded-3xl bg-gradient-to-tr from-accent-purple to-primary p-1 mb-8 shadow-xl shadow-primary/30">
+          <div className="w-32 h-32 rounded-3xl bg-linear-to-tr from-accent-purple to-primary p-1 mb-8 shadow-xl shadow-primary/30">
             <div className="w-full h-full rounded-[20px] bg-white flex items-center justify-center">
               <Bot className="w-16 h-16 text-primary" />
             </div>

@@ -36,7 +36,7 @@ const Dashboard = () => {
         <TopHeader />
 
         {/* Dynamic Content Area */}
-        <div className="p-4 sm:p-8 max-w-[1400px] mx-auto min-h-[calc(100vh-6rem)]">
+        <div className="p-4 sm:p-8 max-w-350 mx-auto min-h-[calc(100vh-6rem)]">
            
            {/* OVERVIEW DASHBOARD */}
            {activeTab === 'dashboard' && (
@@ -61,7 +61,7 @@ const Dashboard = () => {
                 {/* 4. Second Split Area: Recent Calls Table & Calendar Widget */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                    <RecentCallsTable />
-                   <div className="col-span-1 lg:col-span-1 h-[400px] lg:h-full">
+                   <div className="col-span-1 lg:col-span-1 h-100 lg:h-full">
                      <CalendarWidget />
                    </div>
                 </div>
@@ -69,7 +69,7 @@ const Dashboard = () => {
                 {/* 5. Third Split Area: AI Insights & Activity Timeline */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
                    <AIInsights />
-                   <div className="col-span-1 lg:col-span-1 h-[400px] lg:h-full">
+                   <div className="col-span-1 lg:col-span-1 h-100 lg:h-full">
                      <ActivityTimeline />
                    </div>
                 </div>

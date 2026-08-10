@@ -142,13 +142,19 @@ const WorkflowCanvas = ({ onClose }) => {
   const { nodes, edges, onNodesChange, onEdgesChange, onConnect, addNode } = useWorkflowStore();
   const [showCopilot, setShowCopilot] = useState(false);
   const [deployStatus, setDeployStatus] = useState(null); // null | 'deploying' | 'success' | 'error'
+  const [toastMessage, setToastMessage] = useState(null);
   const { screenToFlowPosition } = useReactFlow();
+
+  const showToast = (msg) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
 
   // ── Deploy handler ────────────────────────────────────────────────────────
   const handleDeploy = async () => {
     if (deployStatus === 'deploying') return;
     if (nodes.length === 0) {
-      alert('Add at least one node to the canvas before deploying.');
+      showToast('Add at least one node to the canvas before deploying.');
       return;
     }
     setDeployStatus('deploying');
@@ -161,14 +167,11 @@ const WorkflowCanvas = ({ onClose }) => {
         edges: edges.map(e => ({ source: e.source, target: e.target })),
       });
       setDeployStatus('success');
+      showToast('Workflow deployed successfully.');
     } catch (err) {
-      // 404 means endpoint doesn't exist yet — treat as accepted for demo
-      if (err.response?.status === 404) {
-        setDeployStatus('success');
-      } else {
-        console.error('Deploy failed:', err);
-        setDeployStatus('error');
-      }
+      console.error('Deploy failed:', err);
+      setDeployStatus('error');
+      showToast(err.message === 'Network Error' ? 'Deployment Backend Not Connected' : 'Failed to deploy workflow');
     }
     // Reset badge after 4 s
     setTimeout(() => setDeployStatus(null), 4000);
@@ -240,6 +243,11 @@ const WorkflowCanvas = ({ onClose }) => {
 
         {/* Floating Top Controls */}
         <div className="absolute top-6 right-6 z-10 flex items-center gap-3">
+          {toastMessage && (
+            <div className="px-4 py-2 bg-red-500/90 text-white text-sm font-medium rounded-xl shadow-lg animate-in fade-in slide-in-from-top-4">
+              {toastMessage}
+            </div>
+          )}
           <DeployBadge status={deployStatus} />
 
           <button

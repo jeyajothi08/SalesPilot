@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowRight, Bot } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 export const HeroSection = () => {
+  const navigate = useNavigate();
   return (
     <section className="relative pt-32 pb-20 md:pt-48 md:pb-32 px-6 overflow-hidden flex flex-col items-center text-center">
       
@@ -34,24 +35,22 @@ export const HeroSection = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-          <Link to="/register" className="w-full sm:w-auto">
-            <motion.button 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 rounded-full bg-white text-black font-semibold flex items-center gap-2 w-full sm:w-auto justify-center hover:bg-gray-100 transition-colors"
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
+            <button 
+              onClick={() => navigate('/register')}
+              className="px-8 py-4 rounded-full bg-white text-black font-semibold flex items-center gap-2 w-full justify-center hover:bg-gray-100 transition-colors cursor-pointer border-none"
             >
               Start for free <ArrowRight className="w-4 h-4" />
-            </motion.button>
-          </Link>
-          <Link to="/register" className="w-full sm:w-auto">
-            <motion.button 
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-semibold w-full sm:w-auto justify-center hover:bg-white/10 transition-colors backdrop-blur-sm"
+            </button>
+          </motion.div>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="w-full sm:w-auto">
+            <button 
+              onClick={() => navigate('/demo')}
+              className="px-8 py-4 rounded-full bg-white/5 border border-white/10 text-white font-semibold flex items-center gap-2 w-full justify-center hover:bg-white/10 transition-colors backdrop-blur-sm cursor-pointer"
             >
               Book Demo
-            </motion.button>
-          </Link>
+            </button>
+          </motion.div>
         </div>
       </motion.div>
 

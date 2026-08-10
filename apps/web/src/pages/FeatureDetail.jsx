@@ -103,7 +103,7 @@ const FeatureDetail = () => {
     <main className="bg-black text-white min-h-screen selection:bg-blue-500 selection:text-white font-sans overflow-hidden flex flex-col">
       <Navbar />
       
-      <div className="flex-grow pt-32 pb-20 px-6 lg:px-8 max-w-4xl mx-auto w-full">
+      <div className="grow pt-32 pb-20 px-6 lg:px-8 max-w-4xl mx-auto w-full">
         <div className="mb-8">
           <Link to="/features" className="inline-flex items-center text-sm font-medium text-gray-400 hover:text-white transition-colors">
             <ArrowRight className="w-4 h-4 rotate-180 mr-2" />

@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2 } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export const PricingSection = () => {
+  const navigate = useNavigate();
   return (
     <section id="pricing" className="py-32 px-6 max-w-7xl mx-auto border-t border-white/5">
       <div className="text-center mb-20 max-w-3xl mx-auto">
@@ -32,9 +33,9 @@ export const PricingSection = () => {
                </li>
              ))}
           </ul>
-          <Link to="/register" className="w-full">
-            <button className="w-full py-3 rounded-full bg-white/10 text-white font-semibold hover:bg-white/20 transition-colors">Start Free Trial</button>
-          </Link>
+          <div onClick={() => navigate('/register')} className="w-full">
+            <button className="w-full py-3 rounded-full bg-white/10 text-white font-semibold hover:bg-white/20 transition-colors border-none cursor-pointer">Start Free Trial</button>
+          </div>
         </motion.div>
 
         {/* Pro Plan */}
@@ -59,9 +60,9 @@ export const PricingSection = () => {
                </li>
              ))}
           </ul>
-          <Link to="/register" className="w-full">
-            <button className="w-full py-3 rounded-full bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/25">Get Started</button>
-          </Link>
+          <div onClick={() => navigate('/demo')} className="w-full">
+            <button className="w-full py-3 rounded-full bg-blue-600 text-white font-semibold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-500/25 border-none cursor-pointer">Get Started</button>
+          </div>
         </motion.div>
       </div>
     </section>
