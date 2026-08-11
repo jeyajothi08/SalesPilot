@@ -8,12 +8,15 @@ const STAGES = [
   { id: 'qualified', altId: 'contacted', title: 'Qualified' },
   { id: 'proposal', altId: 'proposal', title: 'Proposal Sent' },
   { id: 'negotiation', altId: 'negotiation', title: 'Negotiation' },
-  { id: 'won', altId: 'won', title: 'Closed Won' }
+  { id: 'won', altId: 'won', title: 'Closed Won' },
+  { id: 'lost', altId: 'lost', title: 'Closed Lost' }
 ];
 
-export default function KanbanBoard() {
+export default function KanbanBoard({ dealsOverride }) {
   const { deals, loading, updateDealStage, updateDeal, deleteDeal } = useCRM();
   const [selectedDeal, setSelectedDeal] = useState(null);
+
+  const activeDealsList = dealsOverride || deals;
 
   const handleDragStart = (e, dealId) => {
     e.dataTransfer.setData('dealId', dealId);
@@ -58,7 +61,7 @@ export default function KanbanBoard() {
   return (
     <div className="flex gap-5 overflow-x-auto pb-2 h-full items-stretch px-2 relative select-none">
       {STAGES.map(stage => {
-        const stageDeals = deals.filter(d => {
+        const stageDeals = activeDealsList.filter(d => {
           const st = (d.stage || '').toLowerCase();
           return st === stage.id || st === stage.altId || (stage.id === 'lead_in' && st === 'lead') || (stage.id === 'qualified' && st === 'contacted');
         });

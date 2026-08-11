@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Bot, User, Sparkles, X, Minimize2, Maximize2 } from 'lucide-react';
+import { Send, Bot, User, Sparkles, X, Minimize2, Maximize2, RotateCcw } from 'lucide-react';
 import apiClient from '../../api/apiClient';
 import { useCRM } from '../../context/CRMContext';
 
@@ -386,6 +386,16 @@ export const CopilotChat = ({ onClose }) => {
           </div>
         </div>
         <div className="flex items-center gap-2 text-gray-400">
+           <button 
+             onClick={(e) => { 
+               e.stopPropagation(); 
+               setMessages([{ role: 'assistant', content: 'Conversation history cleared. How can I assist with your CRM pipeline now?' }]);
+             }} 
+             className="hover:text-white transition-colors cursor-pointer border-none bg-transparent"
+             title="Clear Conversation History"
+           >
+              <RotateCcw className="w-3.5 h-3.5" />
+           </button>
            <button onClick={(e) => { e.stopPropagation(); setIsMinimized(!isMinimized); }} className="hover:text-white transition-colors cursor-pointer border-none bg-transparent">
               {isMinimized ? <Maximize2 className="w-4 h-4" /> : <Minimize2 className="w-4 h-4" />}
            </button>

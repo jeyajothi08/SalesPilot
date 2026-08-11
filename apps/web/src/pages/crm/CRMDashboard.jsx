@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import PipelinePage from './PipelinePage';
 import CustomersPage from './CustomersPage';
+import PipelineIntelligence from '../../components/crm/PipelineIntelligence';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CRMDashboard() {
@@ -22,7 +23,7 @@ export default function CRMDashboard() {
         <nav className="flex space-x-1 bg-white/5 p-1 rounded-lg">
           <button
             onClick={() => setActiveTab('pipeline')}
-            className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${
+            className={`px-4 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer border-none ${
               activeTab === 'pipeline' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25' : 'text-gray-400 hover:text-white hover:bg-white/5'
             }`}
           >
@@ -30,11 +31,19 @@ export default function CRMDashboard() {
           </button>
           <button
             onClick={() => setActiveTab('customers')}
-            className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${
+            className={`px-4 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer border-none ${
               activeTab === 'customers' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25' : 'text-gray-400 hover:text-white hover:bg-white/5'
             }`}
           >
             Customers
+          </button>
+          <button
+            onClick={() => setActiveTab('intelligence')}
+            className={`px-4 py-1.5 text-xs font-semibold rounded-md transition-colors cursor-pointer border-none ${
+              activeTab === 'intelligence' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/25' : 'text-gray-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            AI Risk & Forecast
           </button>
         </nav>
       </header>
@@ -50,7 +59,13 @@ export default function CRMDashboard() {
             transition={{ duration: 0.2 }}
             className="h-full w-full absolute inset-0"
           >
-            {activeTab === 'pipeline' ? <PipelinePage /> : <CustomersPage />}
+            {activeTab === 'pipeline' ? (
+              <PipelinePage />
+            ) : activeTab === 'customers' ? (
+              <CustomersPage />
+            ) : (
+              <PipelineIntelligence />
+            )}
           </motion.div>
         </AnimatePresence>
       </main>
