@@ -147,7 +147,7 @@ export default function VoiceAgent() {
       </div>
 
       {/* Main Interactive Audio Visualizer & Control Panel */}
-      <div className="p-8 rounded-3xl bg-gradient-to-b from-purple-900/20 via-black to-black border border-purple-500/20 flex flex-col items-center justify-center text-center space-y-6 relative overflow-hidden">
+      <div className="p-8 rounded-3xl bg-linear-to-b from-purple-900/20 via-black to-black border border-purple-500/20 flex flex-col items-center justify-center text-center space-y-6 relative overflow-hidden">
         
         {/* Language Detection Pill */}
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-medium text-gray-300">

@@ -69,7 +69,7 @@ export default function LeadScoringAgent() {
       {/* Main Score Hero Card */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        <div className="p-6 rounded-3xl bg-gradient-to-br from-amber-600/15 via-black to-black border border-amber-500/30 flex flex-col items-center justify-center text-center space-y-4">
+        <div className="p-6 rounded-3xl bg-linear-to-br from-amber-600/15 via-black to-black border border-amber-500/30 flex flex-col items-center justify-center text-center space-y-4">
           <span className="text-xs font-bold uppercase tracking-wider text-amber-400">AI Lead Score</span>
           
           <div className="relative flex items-center justify-center">

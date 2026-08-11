@@ -15,7 +15,7 @@ export default function AgentCenterPage() {
       {/* Master Agent Center Navigation Header */}
       <header className="h-14 border-b border-white/10 bg-black/80 backdrop-blur-md px-6 flex items-center justify-between z-10 shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-purple-500 to-blue-600 flex items-center justify-center shadow-lg shadow-purple-500/25">
+          <div className="w-7 h-7 rounded-xl bg-linear-to-br from-purple-500 to-blue-600 flex items-center justify-center shadow-lg shadow-purple-500/25">
             <Bot className="w-4 h-4 text-white" />
           </div>
           <span className="text-white font-bold tracking-tight text-sm">Agent Center</span>
