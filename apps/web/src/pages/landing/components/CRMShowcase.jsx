@@ -123,7 +123,7 @@ export const CRMShowcase = () => {
 
             <button
               onClick={() => setIsAnalyticsOpen(true)}
-              className="font-semibold text-emerald-400 bg-emerald-500/10 hover:bg-emerald-500/20 px-2.5 py-1 rounded-md border border-emerald-500/20 transition-colors cursor-pointer flex items-center gap-1.5"
+              className="font-semibold text-blue-400 bg-blue-500/10 hover:bg-blue-500/20 px-2.5 py-1 rounded-md border border-blue-500/20 transition-colors cursor-pointer flex items-center gap-1.5"
             >
               <TrendingUp className="w-3 h-3" />
               <span>${totalPipelineVal.toLocaleString()} Total Pipeline</span>
@@ -234,7 +234,7 @@ export const CRMShowcase = () => {
                               {deal.title}
                             </h4>
                           </div>
-                          <div className="px-2 py-1 rounded-lg bg-white/10 text-xs font-bold text-emerald-400 border border-emerald-500/20 shrink-0 font-mono">
+                          <div className="px-2 py-1 rounded-lg bg-white/10 text-xs font-bold text-blue-400 border border-blue-500/20 shrink-0 font-mono">
                             {deal.value}
                           </div>
                         </div>
