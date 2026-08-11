@@ -18,7 +18,7 @@ export const SmartDock = ({ onAppClick, openApps = [] }) => {
       initial={{ y: 100 }}
       animate={{ y: 0 }}
       transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[100]"
+      className="fixed bottom-6 left-1/2 -translate-x-1/2 z-100"
     >
        <div className="flex items-end gap-3 px-4 py-3 bg-ds-surface/60 backdrop-blur-3xl border border-white/10 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
           
