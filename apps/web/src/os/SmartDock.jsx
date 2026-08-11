@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Users, MessageSquare, FileText, Settings, Search, Sparkles, Network } from 'lucide-react';
+import { LayoutDashboard, Users, MessageSquare, FileText, Settings, Search, Sparkles, Network, Bot } from 'lucide-react';
 
 export const SmartDock = ({ onAppClick, openApps = [] }) => {
   const apps = [
+    { id: 'agents', label: 'AI Agent Center', icon: <Bot className="w-4 h-4 text-purple-400" />, color: 'bg-purple-500/20' },
     { id: 'copilot', label: 'AI Copilot', icon: <Sparkles className="w-4 h-4 text-blue-400" />, color: 'bg-blue-500/20' },
     { id: 'workflow', label: 'Automations', icon: <Network className="w-4 h-4 text-cyan-400" />, color: 'bg-cyan-500/20' },
     { id: 'crm', label: 'CRM', icon: <Users className="w-4 h-4 text-blue-400" />, color: 'bg-blue-500/20' },

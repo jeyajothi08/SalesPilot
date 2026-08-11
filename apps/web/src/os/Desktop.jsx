@@ -14,6 +14,7 @@ import { BillingApp } from './apps/billing/BillingApp';
 import { MarketingAppWindow } from './MarketingAppWindow';
 import { SettingsApp } from './SettingsApp';
 import { ProposalsApp } from './ProposalsApp';
+import { AgentCenterApp } from './AgentCenterApp';
 import { CopilotChat } from '../components/ai/CopilotChat';
 import { logout } from '../api/apiClient';
 
@@ -83,6 +84,7 @@ export const Desktop = () => {
       { label: 'Command Palette (⌘K)', action: () => document.dispatchEvent(new KeyboardEvent('keydown', { key: 'k', ctrlKey: true })) },
     ],
     view: [
+      { label: 'Agent Center (AI Sales)', action: () => handleOpenApp('agents') },
       { label: 'CRM Pipeline',       action: () => handleOpenApp('crm') },
       { label: 'Analytics & BI',     action: () => handleOpenApp('analytics') },
       { label: 'Voice Calls',        action: () => handleOpenApp('voice') },
@@ -92,6 +94,7 @@ export const Desktop = () => {
       { label: 'Workflow Builder',   action: () => handleOpenApp('workflow') },
     ],
     ai: [
+      { label: 'Open Agent Center', action: () => handleOpenApp('agents') },
       { label: showCopilot ? 'Hide Copilot Chat' : 'Show Copilot Chat', action: () => setShowCopilot(v => !v) },
       { label: 'Open AI Copilot App', action: () => handleOpenApp('copilot') },
       'divider',
@@ -167,6 +170,7 @@ export const Desktop = () => {
                 onClose:  () => handleCloseApp(app.id),
               };
 
+              if (app.id === 'agents')        return <AgentCenterApp   key={app.id} {...props} />;
               if (app.id === 'crm')           return <CRMApp           key={app.id} {...props} />;
               if (app.id === 'voice')         return <VoiceApp         key={app.id} {...props} />;
               if (app.id === 'communication') return <CommunicationApp key={app.id} {...props} />;
