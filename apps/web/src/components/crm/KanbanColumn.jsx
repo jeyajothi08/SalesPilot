@@ -18,7 +18,7 @@ export default function KanbanColumn({ id, title, deals, onDragStart, onDrop, on
             {deals.length}
           </span>
         </div>
-        <span className="text-emerald-400 font-medium text-sm font-mono">
+        <span className="text-blue-400 font-medium text-sm font-mono">
           ${totalValue.toLocaleString()}
         </span>
       </div>

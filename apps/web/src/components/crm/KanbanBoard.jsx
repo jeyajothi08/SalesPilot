@@ -56,7 +56,7 @@ export default function KanbanBoard() {
   const currentSelectedDeal = selectedDeal ? deals.find(d => d.id === selectedDeal.id) || selectedDeal : null;
 
   return (
-    <div className="flex gap-6 overflow-x-auto pb-8 h-full items-start px-2 relative">
+    <div className="flex gap-5 overflow-x-auto pb-2 h-full items-stretch px-2 relative select-none">
       {STAGES.map(stage => {
         const stageDeals = deals.filter(d => {
           const st = (d.stage || '').toLowerCase();
