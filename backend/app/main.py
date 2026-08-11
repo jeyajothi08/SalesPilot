@@ -15,7 +15,7 @@ from app.api.v1.endpoints import (
     health, auth, crm, ai, voice, communication,
     analytics, billing, marketing, omni_inbox,
     livechat_ws, organization, team, rbac, audit, security,
-    workflows,
+    workflows, demo,
 )
 from app.middleware.security import (
     RateLimitMiddleware,
@@ -108,6 +108,7 @@ def get_application() -> FastAPI:
     prefix = settings.API_V1_STR
 
     app.include_router(health.router,        prefix=f"{prefix}/health",        tags=["Health"])
+    app.include_router(demo.router,          prefix=f"{prefix}/demo",          tags=["Demo Request"])
     app.include_router(auth.router,          prefix=f"{prefix}/auth",          tags=["Auth"])
     app.include_router(crm.router,           prefix=f"{prefix}/crm",           tags=["CRM"])
     app.include_router(ai.router,            prefix=f"{prefix}/ai",            tags=["AI Brain"])

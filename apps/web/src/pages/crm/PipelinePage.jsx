@@ -29,15 +29,15 @@ export default function PipelinePage() {
   };
 
   return (
-    <div className="h-full flex flex-col p-8 space-y-6 relative">
+    <div className="h-full flex flex-col p-5 space-y-3 relative">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-white tracking-tight">Sales Pipeline</h1>
-          <p className="text-gray-400 mt-1 text-sm">Drag and drop deals across stages. Copilot analyzes live win probabilities automatically.</p>
+          <h1 className="text-xl font-bold text-white tracking-tight">Sales Pipeline</h1>
+          <p className="text-gray-400 mt-0.5 text-xs">Drag and drop deals across stages. Copilot analyzes live win probabilities automatically.</p>
         </div>
         <button 
           onClick={() => setShowModal(true)}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg shadow-lg shadow-blue-500/25 transition-colors cursor-pointer border-none"
+          className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold rounded-lg shadow-md shadow-blue-500/25 transition-colors cursor-pointer border-none"
         >
           + New Deal
         </button>

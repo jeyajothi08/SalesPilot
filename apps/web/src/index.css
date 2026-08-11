@@ -30,6 +30,16 @@
   --color-ds-info: var(--ds-info);
   --color-ds-info-bg: var(--ds-info-bg);
 
+  /* Legacy & Utility Aliases */
+  --color-text-main: var(--theme-text-main, #FFFFFF);
+  --color-text-muted: var(--theme-text-muted, #9CA3AF);
+  --color-bg-primary: var(--theme-bg-primary, #000000);
+  --color-bg-secondary: var(--theme-bg-secondary, #09090B);
+  --color-border: var(--theme-border, rgba(255, 255, 255, 0.12));
+  --color-primary: var(--ds-primary, #3B82F6);
+  --color-primary-hover: var(--ds-primary-hover, #2563EB);
+  --color-accent-purple: #8B5CF6;
+
   /* Typography */
   --font-ds: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   
@@ -127,6 +137,20 @@ body {
   border: 1px solid var(--ds-border);
   box-shadow: var(--shadow-ds-glass);
   border-radius: var(--radius-ds-xl);
+}
+
+.btn-primary {
+  background-color: var(--ds-primary, #3B82F6);
+  color: #ffffff;
+  border-radius: var(--radius-ds-md, 12px);
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--ds-primary-hover, #2563EB);
+  box-shadow: var(--shadow-ds-glow-primary);
 }
 
 /* ── React Flow CSS safety overrides ──────────────────────────────────────── */

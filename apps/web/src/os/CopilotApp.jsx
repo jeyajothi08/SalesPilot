@@ -59,13 +59,13 @@ export const CopilotApp = ({ id, isActive, onFocus, onClose }) => {
        <div className="flex flex-col h-full bg-black/40 relative">
           
           {/* Avatar Section */}
-          <div className="h-64 border-b border-white/5 relative overflow-hidden flex flex-col items-center justify-center">
-             <AIAvatar state={aiState} className="w-full h-full absolute inset-0 z-0" />
+          <div className="h-36 border-b border-white/5 relative overflow-hidden flex flex-col items-center justify-center bg-black/60">
+             <AIAvatar state={aiState} className="w-full h-full absolute inset-0 z-0 scale-75" />
              
              {/* Status Badge overlay */}
-             <div className="absolute top-4 right-4 z-10">
+             <div className="absolute top-3 right-3 z-10">
                 <Badge variant={aiState === 'listening' ? 'info' : aiState === 'thinking' ? 'warning' : aiState === 'speaking' ? 'success' : 'neutral'} pulse={aiState !== 'idle'}>
-                   <span className="capitalize">{aiState}</span>
+                   <span className="capitalize text-[10px]">{aiState}</span>
                 </Badge>
              </div>
           </div>
@@ -75,16 +75,16 @@ export const CopilotApp = ({ id, isActive, onFocus, onClose }) => {
 
           {/* Suggestions Context */}
           {aiState === 'idle' && (
-            <div className="p-4 border-t border-white/5 bg-white/5 space-y-2 shrink-0">
-               <div className="text-[10px] font-bold text-ds-text-tertiary uppercase tracking-wider mb-2">Live CRM Actions</div>
+            <div className="p-3 border-t border-white/5 bg-white/5 space-y-1.5 shrink-0">
+               <div className="text-[9px] font-bold text-ds-text-tertiary uppercase tracking-wider mb-1">Live CRM Actions</div>
                <SmartSuggestionCard 
-                 icon={<Mail className="w-4 h-4"/>} 
+                 icon={<Mail className="w-3.5 h-3.5 text-blue-400"/>} 
                  title={`Follow up with ${deals[0]?.company || 'Key Accounts'}`} 
                  description={`Next step: ${deals[0]?.nextAction || 'Schedule review call'}`} 
                  onClick={runDemoCycle} 
                />
                <SmartSuggestionCard 
-                 icon={<FileText className="w-4 h-4"/>} 
+                 icon={<FileText className="w-3.5 h-3.5 text-blue-400"/>} 
                  title="Analyze Pipeline Risks" 
                  description={`Analyze ${deals.length} deals for win probabilities.`} 
                  onClick={runDemoCycle} 
@@ -93,14 +93,14 @@ export const CopilotApp = ({ id, isActive, onFocus, onClose }) => {
           )}
 
           {/* Voice Input Area */}
-          <div className="p-4 bg-ds-surface-hover shrink-0">
+          <div className="p-3 bg-black/80 shrink-0">
              <button 
                onClick={runDemoCycle}
-               className={`w-full py-3 rounded-xl flex items-center justify-center gap-2 font-bold text-sm transition-all shadow-lg cursor-pointer
-                 ${aiState === 'listening' ? 'bg-blue-500 text-white animate-pulse' : 'bg-white/10 hover:bg-white/20 text-ds-text-primary'}
+               className={`w-full py-2 rounded-lg flex items-center justify-center gap-2 font-semibold text-xs transition-all shadow-md cursor-pointer
+                 ${aiState === 'listening' ? 'bg-blue-600 text-white animate-pulse' : 'bg-white/10 hover:bg-white/20 text-white'}
                `}
              >
-                <Mic className="w-4 h-4" />
+                <Mic className="w-3.5 h-3.5" />
                 {aiState === 'listening' ? 'Listening...' : 'Tap to Speak'}
              </button>
           </div>
