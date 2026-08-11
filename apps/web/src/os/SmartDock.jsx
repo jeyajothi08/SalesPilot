@@ -4,13 +4,13 @@ import { LayoutDashboard, Users, MessageSquare, FileText, Settings, Search, Spar
 
 export const SmartDock = ({ onAppClick, openApps = [] }) => {
   const apps = [
-    { id: 'copilot', label: 'AI Copilot', icon: <Sparkles className="w-5 h-5 text-yellow-400" />, color: 'bg-yellow-500/20' },
-    { id: 'workflow', label: 'Automations', icon: <Network className="w-5 h-5 text-indigo-400" />, color: 'bg-indigo-500/20' },
+    { id: 'copilot', label: 'AI Copilot', icon: <Sparkles className="w-5 h-5 text-blue-400" />, color: 'bg-blue-500/20' },
+    { id: 'workflow', label: 'Automations', icon: <Network className="w-5 h-5 text-cyan-400" />, color: 'bg-cyan-500/20' },
     { id: 'crm', label: 'CRM', icon: <Users className="w-5 h-5 text-blue-400" />, color: 'bg-blue-500/20' },
-    { id: 'analytics', label: 'Analytics', icon: <LayoutDashboard className="w-5 h-5 text-purple-400" />, color: 'bg-purple-500/20' },
-    { id: 'voice', label: 'Voice Calls', icon: <MessageSquare className="w-5 h-5 text-green-400" />, color: 'bg-green-500/20' },
-    { id: 'billing', label: 'Billing', icon: <FileText className="w-5 h-5 text-emerald-400" />, color: 'bg-emerald-500/20' },
-    { id: 'proposals', label: 'Proposals', icon: <FileText className="w-5 h-5 text-orange-400" />, color: 'bg-orange-500/20' },
+    { id: 'analytics', label: 'Analytics', icon: <LayoutDashboard className="w-5 h-5 text-blue-300" />, color: 'bg-blue-600/20' },
+    { id: 'voice', label: 'Voice Calls', icon: <MessageSquare className="w-5 h-5 text-blue-400" />, color: 'bg-blue-500/20' },
+    { id: 'billing', label: 'Billing', icon: <FileText className="w-5 h-5 text-cyan-400" />, color: 'bg-cyan-500/20' },
+    { id: 'proposals', label: 'Proposals', icon: <FileText className="w-5 h-5 text-blue-400" />, color: 'bg-blue-500/20' },
   ];
 
   return (

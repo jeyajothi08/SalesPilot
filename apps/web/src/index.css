@@ -49,72 +49,30 @@
   --shadow-ds-glow-primary: 0 0 24px var(--ds-primary-glass);
 }
 
-:root {
-  /* LIGHT MODE TOKENS */
-  --ds-background: #FAFAFA;
-  --ds-surface: #FFFFFF;
-  --ds-surface-hover: #F4F4F5;
-  --ds-surface-glass: rgba(255, 255, 255, 0.7);
-  
-  --ds-text-primary: #09090B;
-  --ds-text-secondary: #52525B;
-  --ds-text-tertiary: #A1A1AA;
-  
-  --ds-border: rgba(0, 0, 0, 0.08);
-  --ds-border-strong: rgba(0, 0, 0, 0.15);
-  
-  --ds-primary: #18181B;
-  --ds-primary-hover: #27272A;
-  --ds-primary-glass: rgba(24, 24, 27, 0.1);
-  
-  --ds-accent: #2563EB;
-  --ds-accent-hover: #1D4ED8;
-  --ds-accent-glass: rgba(37, 99, 235, 0.15);
-  
-  --ds-success: #10B981;
-  --ds-success-bg: rgba(16, 185, 129, 0.1);
-  --ds-warning: #F59E0B;
-  --ds-warning-bg: rgba(245, 158, 11, 0.1);
-  --ds-danger: #EF4444;
-  --ds-danger-bg: rgba(239, 68, 68, 0.1);
-  --ds-info: #3B82F6;
-  --ds-info-bg: rgba(59, 130, 246, 0.1);
-  
-  --ds-shadow-color: rgba(0, 0, 0, 0.04);
-  
-  /* Fallbacks for older components */
-  --theme-bg-primary: var(--ds-surface);
-  --theme-bg-secondary: var(--ds-background);
-  --theme-text-main: var(--ds-text-primary);
-  --theme-text-muted: var(--ds-text-secondary);
-  --theme-border: var(--ds-border);
-  --theme-glass-bg: var(--ds-surface-glass);
-}
-
-.dark {
-  /* DARK MODE TOKENS */
+:root, .dark {
+  /* OVERALL WEBAPP UI THEME: FULL BLACK BG, BLUE ACCENT, WHITE TEXT */
   --ds-background: #000000;
-  --ds-surface: #0A0A0A;
-  --ds-surface-hover: #171717;
-  --ds-surface-glass: rgba(20, 20, 20, 0.6);
+  --ds-surface: #09090B;
+  --ds-surface-hover: #141417;
+  --ds-surface-glass: rgba(10, 10, 12, 0.85);
   
   --ds-text-primary: #FFFFFF;
-  --ds-text-secondary: #A1A1AA;
-  --ds-text-tertiary: #52525B;
+  --ds-text-secondary: #D1D5DB;
+  --ds-text-tertiary: #9CA3AF;
   
-  --ds-border: rgba(255, 255, 255, 0.1);
-  --ds-border-strong: rgba(255, 255, 255, 0.2);
+  --ds-border: rgba(255, 255, 255, 0.12);
+  --ds-border-strong: rgba(59, 130, 246, 0.4);
   
-  --ds-primary: #FFFFFF;
-  --ds-primary-hover: #E4E4E7;
-  --ds-primary-glass: rgba(255, 255, 255, 0.1);
+  --ds-primary: #3B82F6;
+  --ds-primary-hover: #2563EB;
+  --ds-primary-glass: rgba(59, 130, 246, 0.2);
   
   --ds-accent: #3B82F6;
   --ds-accent-hover: #60A5FA;
-  --ds-accent-glass: rgba(59, 130, 246, 0.15);
+  --ds-accent-glass: rgba(59, 130, 246, 0.25);
   
-  --ds-success: #10B981;
-  --ds-success-bg: rgba(16, 185, 129, 0.15);
+  --ds-success: #3B82F6;
+  --ds-success-bg: rgba(59, 130, 246, 0.15);
   --ds-warning: #F59E0B;
   --ds-warning-bg: rgba(245, 158, 11, 0.15);
   --ds-danger: #EF4444;
@@ -122,12 +80,20 @@
   --ds-info: #3B82F6;
   --ds-info-bg: rgba(59, 130, 246, 0.15);
   
-  --ds-shadow-color: rgba(0, 0, 0, 0.3);
+  --ds-shadow-color: rgba(0, 0, 0, 0.9);
+  
+  /* Fallbacks for older components */
+  --theme-bg-primary: #000000;
+  --theme-bg-secondary: #09090B;
+  --theme-text-main: #FFFFFF;
+  --theme-text-muted: #D1D5DB;
+  --theme-border: rgba(255, 255, 255, 0.12);
+  --theme-glass-bg: rgba(10, 10, 12, 0.85);
 }
 
 body {
-  background-color: var(--ds-background);
-  color: var(--ds-text-primary);
+  background-color: #000000;
+  color: #FFFFFF;
   font-family: var(--font-ds);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
