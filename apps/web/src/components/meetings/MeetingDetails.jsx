@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Video, Clock, MapPin, Users, Phone, FileText, CheckCircle, ExternalLink, Calendar as CalIcon, Settings, Target } from 'lucide-react';
+import { ArrowLeft, Video, Clock, Users, FileText, CheckCircle, ExternalLink, Calendar as CalIcon, Settings, Target } from 'lucide-react';
 
 const MeetingDetails = ({ meeting, onBack }) => {
   const [activeTab, setActiveTab] = useState('overview');

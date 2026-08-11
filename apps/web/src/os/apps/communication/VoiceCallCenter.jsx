@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { PhoneCall, Phone, PhoneOff, Mic, MicOff, Settings, Volume2, History, Contact2, Play } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { PhoneCall, Phone, PhoneOff, Mic, MicOff, Settings, Volume2, History, Contact2 } from 'lucide-react';
+// import {  AnimatePresence } from 'framer-motion';
 
 export default function VoiceCallCenter() {
   const [callState, setCallState] = useState('idle'); // idle, dialing, active, wrapup

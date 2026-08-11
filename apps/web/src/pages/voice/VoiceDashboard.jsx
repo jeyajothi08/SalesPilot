@@ -18,7 +18,7 @@ export default function VoiceDashboard() {
       {/* Module Header */}
       <header className="h-14 border-b border-white/10 bg-black/50 backdrop-blur-md px-6 flex items-center justify-between z-10 shrink-0">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
+          <div className="w-6 h-6 rounded bg-linear-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
             <svg className="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
             </svg>
@@ -28,7 +28,7 @@ export default function VoiceDashboard() {
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-auto bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-900/10 via-zinc-950 to-zinc-950 p-8">
+      <main className="flex-1 overflow-auto bg-[radial-gradient(ellipse_at_top_right,var(--tw-gradient-stops))] from-emerald-900/10 via-zinc-950 to-zinc-950 p-8">
         
         <div className="flex justify-between items-center mb-8">
           <div>

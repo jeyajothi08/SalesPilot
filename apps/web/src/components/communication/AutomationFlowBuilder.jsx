@@ -1,5 +1,5 @@
 import React from 'react';
-import { Zap, Play, Mail, MessageSquare, Clock, Plus, Settings, CheckCircle2, ChevronRight, Handshake, FileText } from 'lucide-react';
+import { Zap, Play, Mail, MessageSquare, Clock, Plus, Settings, CheckCircle2, Handshake, FileText } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const defaultFlow = [

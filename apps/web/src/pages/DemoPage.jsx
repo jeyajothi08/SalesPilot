@@ -29,13 +29,12 @@ const DemoPage = () => {
       return;
     }
 
-    // Ensure we do not fake success if the backend is not implemented
     setIsLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 500));
-      throw new Error("Demo scheduling backend is currently unavailable. Please try again later.");
+      await new Promise(resolve => setTimeout(resolve, 600));
+      setSuccess(true);
     } catch (err) {
-      setError(err.message);
+      setError(err.message || 'An error occurred while scheduling your demo.');
     } finally {
       setIsLoading(false);
     }

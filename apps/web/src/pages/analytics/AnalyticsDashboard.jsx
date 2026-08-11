@@ -3,7 +3,7 @@ import KPIWidget from '../../components/analytics/KPIWidget';
 import RevenueChart from '../../components/analytics/RevenueChart';
 import WinRateChart from '../../components/analytics/WinRateChart';
 import { analyticsAPI } from '../../api/analytics';
-import { motion } from 'framer-motion';
+// import { motion } from 'framer-motion';
 
 export default function AnalyticsDashboard() {
   const [data, setData] = useState(null);

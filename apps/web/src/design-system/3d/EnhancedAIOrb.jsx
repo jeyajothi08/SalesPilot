@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Sphere, MeshDistortMaterial, Float, Sparkles } from '@react-three/drei';
-import * as THREE from 'three';
+
 
 export const EnhancedAIOrb = ({ state = 'thinking' }) => {
   const coreRef = useRef();

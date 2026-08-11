@@ -7,6 +7,7 @@ from app.models.communication import Campaign, CommunicationTemplate, OutboundMe
 from app.models.analytics import KPIMetric, DashboardWidget, AIInsight
 from app.models.billing import Plan, Subscription, PaymentTransaction, Invoice
 from app.models.audit import AuditLog
+from app.models.workflow import Workflow, WorkflowExecution
 
 __all__ = [
     "Base", "User", "Organization", "Role", "OrganizationUser", "Session", "Department", "Team", "Invitation",
@@ -16,5 +17,5 @@ __all__ = [
     "Campaign", "CommunicationTemplate", "OutboundMessage", "OmniThread", "OmniMessage",
     "KPIMetric", "DashboardWidget", "AIInsight",
     "Plan", "Subscription", "PaymentTransaction", "Invoice",
-    "AuditLog"
+    "AuditLog", "Workflow", "WorkflowExecution"
 ]

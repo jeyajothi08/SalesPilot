@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, MessageSquare, Phone, MoreVertical, Search, Filter, Send, PhoneCall, Paperclip, CheckCircle, Clock } from 'lucide-react';
-import { motion } from 'framer-motion';
+// import { motion } from 'framer-motion';
 
 const mockThreads = [
   {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Database, FileText, Globe, MessageCircle, Briefcase, Zap, Search, Settings } from 'lucide-react';
+import { Database, FileText, MessageCircle, Briefcase, Zap, Settings } from 'lucide-react';
 
 import DataSourceManager from './knowledge/DataSourceManager';
 import FAQBuilder from './knowledge/FAQBuilder';

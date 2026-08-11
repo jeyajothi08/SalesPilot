@@ -1,8 +1,8 @@
 import React from 'react';
 import DealCard from './DealCard';
 
-export default function KanbanColumn({ id, title, deals, onDragStart, onDrop, onDragOver }) {
-  const totalValue = deals.reduce((sum, deal) => sum + deal.value, 0);
+export default function KanbanColumn({ id, title, deals, onDragStart, onDrop, onDragOver, onSelectDeal }) {
+  const totalValue = deals.reduce((sum, deal) => sum + (Number(deal.value) || 0), 0);
 
   return (
     <div 
@@ -18,22 +18,23 @@ export default function KanbanColumn({ id, title, deals, onDragStart, onDrop, on
             {deals.length}
           </span>
         </div>
-        <span className="text-emerald-400 font-medium text-sm">
+        <span className="text-emerald-400 font-medium text-sm font-mono">
           ${totalValue.toLocaleString()}
         </span>
       </div>
 
       {/* Column Body - Droppable Area */}
-      <div className="p-3 flex-1 overflow-y-auto min-h-[200px]">
+      <div className="p-3 flex-1 overflow-y-auto min-h-50">
         {deals.map(deal => (
           <DealCard 
             key={deal.id} 
             deal={deal} 
             onDragStart={onDragStart}
+            onClick={onSelectDeal}
           />
         ))}
         {deals.length === 0 && (
-          <div className="h-full flex items-center justify-center text-gray-600 text-sm italic border-2 border-dashed border-white/5 rounded-xl p-8 text-center">
+          <div className="h-full flex items-center justify-center text-gray-600 text-sm italic border-2 border-dashed border-white/5 rounded-xl p-8 text-center select-none">
             Drop deals here
           </div>
         )}

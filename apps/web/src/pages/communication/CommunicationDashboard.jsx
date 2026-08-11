@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import UnifiedInbox from '../../os/apps/communication/UnifiedInbox';
 import VoiceCallCenter from '../../os/apps/communication/VoiceCallCenter';
 import LiveChatWidget from '../../os/apps/communication/LiveChatWidget';
-import { MessageSquare, PhoneCall, LayoutDashboard, BarChart2 } from 'lucide-react';
+import { MessageSquare, PhoneCall, BarChart2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CommunicationDashboard() {

@@ -6,7 +6,7 @@ export const communicationAPI = {
     return response.data;
   },
   
-  generateAIDraft: async (prompt, channel) => {
+  generateAIDraft: async (prompt, _channel) => {
     const response = await apiClient.post('/communication/email/generate', {
       goal: prompt,
       tone: "professional",

@@ -10,6 +10,7 @@ const AITrainingPanel = () => {
   useEffect(() => {
     if (trainingState === 'training') {
       let currentProgress = 0;
+      let logsAdded = 0;
       const interval = setInterval(() => {
         currentProgress += Math.random() * 5 + 1; // Increment by 1-6%
         
@@ -23,10 +24,22 @@ const AITrainingPanel = () => {
         setProgress(currentProgress);
         
         // Add random logs based on progress
-        if (currentProgress > 10 && currentProgress < 20 && logs.length === 0) setLogs(prev => [...prev, 'Reading 14 PDF Documents...']);
-        if (currentProgress > 30 && currentProgress < 40 && logs.length === 1) setLogs(prev => [...prev, 'Crawling 128 Website Pages...']);
-        if (currentProgress > 50 && currentProgress < 60 && logs.length === 2) setLogs(prev => [...prev, 'Chunking data and creating embeddings...']);
-        if (currentProgress > 70 && currentProgress < 80 && logs.length === 3) setLogs(prev => [...prev, 'Updating vector database...']);
+        if (currentProgress > 10 && currentProgress < 20 && logsAdded === 0) {
+            setLogs(prev => [...prev, 'Reading 14 PDF Documents...']);
+            logsAdded++;
+        }
+        if (currentProgress > 30 && currentProgress < 40 && logsAdded === 1) {
+            setLogs(prev => [...prev, 'Crawling 128 Website Pages...']);
+            logsAdded++;
+        }
+        if (currentProgress > 50 && currentProgress < 60 && logsAdded === 2) {
+            setLogs(prev => [...prev, 'Chunking data and creating embeddings...']);
+            logsAdded++;
+        }
+        if (currentProgress > 70 && currentProgress < 80 && logsAdded === 3) {
+            setLogs(prev => [...prev, 'Updating vector database...']);
+            logsAdded++;
+        }
 
       }, 500); // Fast simulation
 

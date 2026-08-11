@@ -1,6 +1,6 @@
 import React from 'react';
-import { DownloadCloud, Mail, Printer, Share2, FileText, LayoutTemplate } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { DownloadCloud, Mail, Printer, Share2 } from 'lucide-react';
+// import { motion } from 'framer-motion';
 
 const DocumentPreview = () => {
   return (

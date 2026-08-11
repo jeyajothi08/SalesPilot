@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, Square, Pause, Mic, Globe, Settings, Activity, PhoneCall, Target, Clock } from 'lucide-react';
+import { Play, Square, Pause, Mic, Globe, Settings, PhoneCall, Target, Clock } from 'lucide-react';
 import CallDashboard from './calling/CallDashboard';
 import LiveCallScreen from './calling/LiveCallScreen';
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import { BarChart2, TrendingUp, Mail, MessageSquare, AlertCircle } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend, Cell } from 'recharts';
+import { BarChart2, TrendingUp, Mail, MessageSquare } from 'lucide-react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Legend } from 'recharts';
 
 const emailData = [
   { name: 'Mon', open: 65, click: 28, reply: 12 },

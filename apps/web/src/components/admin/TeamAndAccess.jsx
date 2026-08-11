@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, Shield, Clock, Plus, Search, MoreHorizontal, UserCheck, Key, LogOut } from 'lucide-react';
+import { Users, Shield, Clock, Plus, Search, MoreHorizontal } from 'lucide-react';
 
 const users = [
   { id: 1, name: 'Sarah Connor', email: 'sarah@salespilot.ai', role: 'Owner', lastActive: 'Just now', status: 'Active' },

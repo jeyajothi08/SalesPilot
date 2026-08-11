@@ -31,7 +31,7 @@ const ActivityTimeline = () => {
         <div className="absolute left-6 top-4 bottom-4 w-px bg-border"></div>
 
         <div className="space-y-6 relative">
-          {activities.map((activity, index) => (
+          {activities.map((activity, _index) => (
             <div key={activity.id} className="flex items-start group">
               <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 z-10 border-4 border-bg-primary ${activity.bg} transition-transform group-hover:scale-110`}>
                 {activity.icon}

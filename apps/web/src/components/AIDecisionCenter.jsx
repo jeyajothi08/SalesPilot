@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { BrainCircuit, Settings, ArrowUpRight } from 'lucide-react';
+import { BrainCircuit, Settings } from 'lucide-react';
 
 import LiveThinkingPanel from './decision/LiveThinkingPanel';
 import IntentAndSentiment from './decision/IntentAndSentiment';

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, User, PhoneOff, Calendar, FileText, MessageSquare, Mail, Edit, BrainCircuit, Activity, HeartHandshake, Mic } from 'lucide-react';
+import {  User, PhoneOff, Calendar, FileText, MessageSquare, Mail, Edit, BrainCircuit, HeartHandshake } from 'lucide-react';
 
 const mockCustomer = {
   name: 'Michael Scott', company: 'Dunder Mifflin', industry: 'Paper Supplies',

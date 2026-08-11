@@ -1,6 +1,6 @@
 import React from 'react';
 import { Target, HeartPulse } from 'lucide-react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { AreaChart, Area, Tooltip, ResponsiveContainer } from 'recharts';
 
 const sentimentData = [
   { time: '0:00', score: 50 },

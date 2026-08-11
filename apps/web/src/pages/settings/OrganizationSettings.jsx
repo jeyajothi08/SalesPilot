@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Building, Globe, MapPin, Save, Image as ImageIcon, CheckCircle, AlertCircle, Loader } from 'lucide-react';
+import { Building, Globe, Save, Image as ImageIcon, CheckCircle, AlertCircle, Loader } from 'lucide-react';
 import { motion } from 'framer-motion';
 import apiClient from '../../api/apiClient';
 

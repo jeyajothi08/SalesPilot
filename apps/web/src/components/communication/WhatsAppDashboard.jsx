@@ -1,5 +1,5 @@
 import React from 'react';
-import { MessageSquare, Plus, Calendar, Handshake, FileText, CheckCircle, Clock, AlertCircle, Play, Edit3, Settings, Zap } from 'lucide-react';
+import { MessageSquare, Plus, Handshake, FileText, CheckCircle, Clock, AlertCircle, Play, Settings, Zap } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 
 const mockAnalytics = [

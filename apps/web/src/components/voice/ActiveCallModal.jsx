@@ -1,46 +1,130 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Mic, MicOff, PhoneOff, Volume2, Sparkles, Globe, AlertCircle, Send, Activity, CheckCircle2 } from 'lucide-react';
+import { useVoiceAssistant } from '../../hooks/useVoiceAssistant';
+
+// Formatter for markdown formatting in Voice AI conversation bubbles
+const formatMessageText = (content) => {
+  if (!content) return null;
+  const lines = content.split('\n');
+  return lines.map((line, lineIdx) => {
+    if (!line.trim()) {
+      return <div key={lineIdx} className="h-2" />;
+    }
+
+    if (line.startsWith('### ')) {
+      return <h4 key={lineIdx} className="font-bold text-white text-sm my-1 tracking-tight">{line.replace('### ', '')}</h4>;
+    }
+
+    // Replace **text** bold formatting
+    const parts = line.split(/(\*\*.*?\*\*)/g);
+    const formattedLine = parts.map((part, partIdx) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={partIdx} className="font-semibold text-white">{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+
+    if (line.trim().startsWith('- ') || line.trim().startsWith('• ')) {
+      return (
+        <div key={lineIdx} className="flex items-start gap-1.5 my-0.5 pl-1">
+          <span className="text-blue-400 font-bold select-none">•</span>
+          <span>{formattedLine}</span>
+        </div>
+      );
+    }
+
+    return <p key={lineIdx} className="my-0.5">{formattedLine}</p>;
+  });
+};
 
 export default function ActiveCallModal({ isOpen, onClose, customerName }) {
-  const [transcript, setTranscript] = useState([
-    { speaker: 'AI', text: 'Hello! This is SalesPilot AI calling. How can I assist you today?' }
-  ]);
-  
-  const [isAiTalking, setIsAiTalking] = useState(true);
+  const {
+    aiState,
+    transcriptHistory,
+    interimText,
+    lastUserPrompt,
+    errorMessage,
+    detectedLang,
+    micStatus,
+    liveActivities,
+    isMicrophoneSupported,
+    startListening,
+    stopListening,
+    cancelVoice,
+    processSpokenInput,
+  } = useVoiceAssistant();
 
-  // Simulate a live conversation
+  const [textInput, setTextInput] = useState('');
+  const transcriptEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    transcriptEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   useEffect(() => {
-    if (!isOpen) return;
-    
-    const timer1 = setTimeout(() => {
-      setIsAiTalking(false);
-      setTranscript(prev => [...prev, { speaker: 'Customer', text: 'Hi, I received your proposal and had a few questions about the pricing.' }]);
-    }, 4000);
+    scrollToBottom();
+  }, [transcriptHistory, interimText, aiState, liveActivities]);
 
-    const timer2 = setTimeout(() => {
-      setIsAiTalking(true);
-      setTranscript(prev => [...prev, { speaker: 'AI', text: 'Absolutely, I would be happy to walk you through the pricing tiers. The enterprise plan includes 24/7 support.' }]);
-    }, 8000);
+  if (!isOpen) return null;
 
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-    };
-  }, [isOpen]);
+  const isSpeaking = aiState === 'speaking';
+  const isRecording = aiState === 'recording';
+  const isRequesting = aiState === 'requesting-microphone';
+  const isTranscribing = aiState === 'transcribing';
+  const isThinking = aiState === 'thinking';
+  const isExecutingTool = aiState === 'executing-tool';
+  const isProcessing = isTranscribing || isThinking || isExecutingTool;
+
+  const handleMicToggle = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    console.log("[PROD-VOICE] Mic toggle clicked, current state:", aiState);
+    if (isRecording || isRequesting) {
+      console.log("[PROD-VOICE] Stopping MediaRecorder...");
+      stopListening();
+    } else {
+      console.log("[PROD-VOICE] Starting MediaRecorder...");
+      startListening();
+    }
+  };
+
+  const handleEndCall = () => {
+    console.log("[PROD-VOICE] End call clicked");
+    cancelVoice();
+    onClose();
+  };
+
+  const handleTextSubmit = (e) => {
+    e.preventDefault();
+    console.log("[PROD-VOICE] Text submit clicked, input:", textInput);
+    if (!textInput.trim() || isProcessing) return;
+    const txt = textInput.trim();
+    setTextInput('');
+    processSpokenInput(txt);
+  };
 
   // Audio wave animation renderer
-  const renderWave = (isActive) => (
-    <div className="flex items-center justify-center gap-1 h-16 mt-6">
-      {[...Array(20)].map((_, i) => (
+  const renderWave = (isActive, isRecordingState) => (
+    <div className="flex items-center justify-center gap-1.5 h-16 my-3">
+      {[...Array(24)].map((_, i) => (
         <motion.div
           key={i}
-          className={`w-1.5 rounded-full ${isActive ? 'bg-blue-400' : 'bg-gray-600'}`}
-          animate={isActive ? {
-            height: [10, Math.random() * 40 + 10, 10],
-          } : { height: 4 }}
+          className={`w-1.5 rounded-full ${
+            isRecordingState
+              ? 'bg-emerald-400'
+              : isActive
+              ? 'bg-blue-400'
+              : 'bg-white/10'
+          }`}
+          animate={isActive || isRecordingState ? {
+            height: [12, Math.random() * 48 + 12, 12],
+          } : { height: 6 }}
           transition={{
             repeat: Infinity,
-            duration: 0.5 + Math.random() * 0.5,
+            duration: 0.4 + Math.random() * 0.4,
             ease: "easeInOut",
           }}
         />
@@ -50,68 +134,181 @@ export default function ActiveCallModal({ isOpen, onClose, customerName }) {
 
   return (
     <AnimatePresence>
-      {isOpen && (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-6 pointer-events-auto"
+        onClick={(e) => {
+          if (e.target === e.currentTarget) {
+            handleEndCall();
+          }
+        }}
+      >
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-6"
+          initial={{ scale: 0.95, y: 20 }}
+          animate={{ scale: 1, y: 0 }}
+          exit={{ scale: 0.95, y: 20 }}
+          className="relative z-50 w-full max-w-xl bg-[#0E0E10] border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col pointer-events-auto"
+          onClick={(e) => e.stopPropagation()}
         >
-          <motion.div
-            initial={{ scale: 0.95, y: 20 }}
-            animate={{ scale: 1, y: 0 }}
-            exit={{ scale: 0.95, y: 20 }}
-            className="w-full max-w-lg bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
-          >
-            {/* Header */}
-            <div className="p-4 border-b border-white/10 bg-black/30 flex justify-between items-center">
-              <div className="flex items-center gap-3">
-                <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                <span className="text-white font-medium">Live Call in Progress</span>
-              </div>
-              <span className="text-gray-400 text-sm">00:00:12</span>
+          {/* Header */}
+          <div className="p-4 border-b border-white/10 bg-white/2 flex justify-between items-center relative z-50">
+            <div className="flex items-center gap-3">
+              <div className={`w-3 h-3 rounded-full ${isRecording ? 'bg-emerald-400 animate-pulse' : isSpeaking ? 'bg-blue-400 animate-pulse' : isProcessing ? 'bg-purple-400 animate-pulse' : 'bg-gray-500'}`} />
+              <span className="text-white font-semibold text-sm">SalesPilot Voice AI SDR</span>
             </div>
 
-            {/* Content */}
-            <div className="p-6 flex flex-col items-center">
-              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(59,130,246,0.3)]">
-                <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-white mb-1">{customerName || 'Unknown Caller'}</h3>
-              <p className="text-sm text-gray-400">{isAiTalking ? 'AI is speaking...' : 'Customer is speaking...'}</p>
-              
-              {renderWave(isAiTalking)}
+            <div className="flex items-center gap-2 text-xs text-gray-400 font-mono">
+              <Globe className="w-3.5 h-3.5 text-blue-400" />
+              <span>Language: <strong className="text-white font-semibold">{detectedLang}</strong></span>
+            </div>
+          </div>
 
-              {/* Transcript */}
-              <div className="mt-8 w-full bg-black/40 rounded-xl p-4 h-48 overflow-y-auto border border-white/5 space-y-4">
-                {transcript.map((msg, i) => (
-                  <div key={i} className={`flex flex-col ${msg.speaker === 'AI' ? 'items-start' : 'items-end'}`}>
-                    <span className="text-xs text-gray-500 mb-1">{msg.speaker}</span>
-                    <div className={`px-3 py-2 rounded-lg text-sm ${msg.speaker === 'AI' ? 'bg-blue-500/20 text-blue-100' : 'bg-white/10 text-gray-200'}`}>
-                      {msg.text}
-                    </div>
+          {/* Status Bar */}
+          <div className="bg-blue-950/40 border-b border-blue-500/20 px-4 py-1.5 text-[11px] font-mono text-gray-300 flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-1.5">
+              <Activity className="w-3 h-3 text-blue-400 shrink-0" />
+              <span>Mic: <strong className={micStatus === 'granted' || micStatus === 'recording' ? 'text-emerald-400' : micStatus === 'denied' ? 'text-rose-400' : 'text-yellow-400'}>{micStatus}</strong></span>
+            </div>
+            <div>State: <strong className="text-white font-semibold uppercase">{aiState}</strong></div>
+            <div className="text-purple-300 font-medium">MediaRecorder Opus</div>
+          </div>
+
+          {/* Error Notice */}
+          {errorMessage && (
+            <div className="bg-rose-500/20 border-b border-rose-500/30 px-6 py-2 text-xs text-rose-300 flex items-center gap-2 font-medium relative z-50">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
+          {/* Voice Visualizer Area */}
+          <div className="p-6 flex flex-col items-center border-b border-white/5 bg-linear-to-b from-transparent to-black/30 relative z-50">
+            <div className="relative">
+              <div className={`w-24 h-24 rounded-full flex items-center justify-center transition-all duration-300 ${
+                isRecording
+                  ? 'bg-emerald-500/20 border-2 border-emerald-500 shadow-[0_0_40px_rgba(16,185,129,0.4)]'
+                  : isSpeaking
+                  ? 'bg-blue-500/20 border-2 border-blue-500 shadow-[0_0_40px_rgba(59,130,246,0.4)]'
+                  : isProcessing
+                  ? 'bg-purple-500/20 border-2 border-purple-500 shadow-[0_0_40px_rgba(168,85,247,0.4)]'
+                  : 'bg-white/5 border border-white/10'
+              }`}>
+                {isRecording ? (
+                  <Mic className="w-10 h-10 text-emerald-400 animate-pulse" />
+                ) : isSpeaking ? (
+                  <Volume2 className="w-10 h-10 text-blue-400 animate-bounce" />
+                ) : isProcessing ? (
+                  <Sparkles className="w-10 h-10 text-purple-400 animate-spin" />
+                ) : (
+                  <Sparkles className="w-10 h-10 text-gray-400" />
+                )}
+              </div>
+            </div>
+
+            <h3 className="text-xl font-bold text-white mt-3">{customerName || 'Live SDR Conversation'}</h3>
+            
+            <p className="text-xs text-gray-400 mt-1 font-medium flex items-center gap-1.5">
+              {isRequesting && <span className="text-yellow-400 font-mono animate-pulse">🎙 Requesting Microphone...</span>}
+              {isRecording && <span className="text-emerald-400 font-mono animate-pulse">🎙 Listening... (Tap mic button to stop)</span>}
+              {isTranscribing && <span className="text-purple-400 font-mono animate-pulse">📝 Transcribing Speech...</span>}
+              {isThinking && <span className="text-purple-400 font-mono animate-pulse">🧠 SalesPilot Agent Thinking...</span>}
+              {isExecutingTool && <span className="text-blue-400 font-mono animate-pulse">⚙️ Checking Live CRM Data...</span>}
+              {isSpeaking && <span className="text-blue-400 font-mono animate-pulse">🔊 Speaking Response...</span>}
+              {aiState === 'idle' && <span>Tap microphone below or speak to interact</span>}
+            </p>
+
+            {renderWave(isSpeaking, isRecording)}
+
+            {/* User Prompt / Interim Transcript Preview */}
+            {(interimText || lastUserPrompt) && (
+              <div className="mt-1 text-xs font-mono text-emerald-300 bg-emerald-950/40 px-3 py-1.5 rounded-xl border border-emerald-500/30 max-w-md text-center">
+                <span className="text-gray-400 mr-1">You said:</span>
+                <span className="font-semibold">"{interimText || lastUserPrompt}"</span>
+              </div>
+            )}
+
+            {/* Live Tool Execution Logs */}
+            {liveActivities.length > 0 && (
+              <div className="mt-3 w-full max-w-md bg-black/60 border border-white/10 rounded-xl p-2 max-h-24 overflow-y-auto custom-scrollbar text-[11px] font-mono text-gray-300 space-y-1">
+                {liveActivities.map((act, idx) => (
+                  <div key={idx} className="flex items-center gap-1.5 text-emerald-400">
+                    <CheckCircle2 className="w-3 h-3 shrink-0" />
+                    <span>{act.text}</span>
                   </div>
                 ))}
               </div>
-            </div>
+            )}
+          </div>
 
-            {/* Footer Actions */}
-            <div className="p-4 border-t border-white/10 bg-black/30 flex justify-center gap-4">
-               <button 
-                  onClick={onClose}
-                  className="px-6 py-2.5 bg-rose-500/20 text-rose-400 hover:bg-rose-500/30 font-medium rounded-xl transition-colors flex items-center gap-2"
-               >
-                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 8l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2v-3.28a1 1 0 00-.684-.948l-4.493-1.498a1 1 0 00-1.21.502l-1.13 2.257a11.042 11.042 0 01-5.516-5.516l2.257-1.13a1 1 0 00.502-1.21L9.22 3.683A1 1 0 008.27 3H5z" />
-                 </svg>
-                 End Call
-               </button>
-            </div>
-          </motion.div>
+          {/* Transcript Log */}
+          <div className="p-4 flex-1 h-48 overflow-y-auto space-y-3 custom-scrollbar bg-black/40 relative z-50">
+            {transcriptHistory.map((msg, i) => (
+              <div key={i} className={`flex flex-col ${msg.speaker === 'AI' ? 'items-start' : 'items-end'}`}>
+                <div className="flex items-center gap-1.5 mb-1">
+                  <span className="text-[10px] text-gray-500 font-mono uppercase">{msg.speaker}</span>
+                  {msg.lang && <span className="text-[10px] text-blue-400/80 font-mono">({msg.lang})</span>}
+                </div>
+                <div className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-xs leading-relaxed ${
+                  msg.speaker === 'AI' 
+                    ? 'bg-white/5 text-gray-200 border border-white/10 rounded-tl-sm font-medium' 
+                    : 'bg-blue-600 text-white rounded-tr-sm font-medium shadow-md'
+                }`}>
+                  {msg.speaker === 'AI' ? formatMessageText(msg.text) : msg.text}
+                </div>
+              </div>
+            ))}
+            <div ref={transcriptEndRef} />
+          </div>
+
+          {/* Fallback Text Input Form */}
+          <div className="px-4 py-2 bg-white/2 border-t border-white/5 relative z-50">
+            <form onSubmit={handleTextSubmit} className="flex items-center gap-2">
+              <input
+                type="text"
+                value={textInput}
+                onChange={(e) => setTextInput(e.target.value)}
+                placeholder="Or type a question (e.g. 'Analyze my sales pipeline' / 'Enoda pipeline analyze panni sollu')..."
+                className="flex-1 bg-black/60 border border-white/10 rounded-xl px-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 font-medium"
+              />
+              <button
+                type="submit"
+                disabled={!textInput.trim() || isProcessing}
+                className="p-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white disabled:opacity-40 transition-colors cursor-pointer border-none"
+              >
+                <Send className="w-3.5 h-3.5" />
+              </button>
+            </form>
+          </div>
+
+          {/* Controls Footer */}
+          <div className="p-4 border-t border-white/10 bg-white/2 flex items-center justify-between gap-4 relative z-50 pointer-events-auto">
+            <button
+              type="button"
+              onClick={handleMicToggle}
+              disabled={!isMicrophoneSupported}
+              className={`px-5 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-2 transition-all cursor-pointer border-none shadow-lg relative z-50 pointer-events-auto ${
+                isRecording || isRequesting
+                  ? 'bg-emerald-500 text-white animate-pulse' 
+                  : 'bg-white/10 hover:bg-white/20 text-white'
+              }`}
+            >
+              {isRecording || isRequesting ? <Mic className="w-4 h-4" /> : <MicOff className="w-4 h-4" />}
+              <span>{isRecording ? 'Stop Listening' : isRequesting ? 'Requesting Mic...' : 'Tap to Speak'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={handleEndCall}
+              className="px-5 py-2.5 rounded-2xl bg-rose-600/30 hover:bg-rose-600/50 border border-rose-500/40 text-xs font-bold text-rose-300 transition-colors flex items-center gap-2 cursor-pointer relative z-50 pointer-events-auto"
+            >
+              <PhoneOff className="w-4 h-4" />
+              <span>End Call</span>
+            </button>
+          </div>
         </motion.div>
-      )}
+      </motion.div>
     </AnimatePresence>
   );
 }

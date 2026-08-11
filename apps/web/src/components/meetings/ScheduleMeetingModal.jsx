@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { X, Calendar as CalIcon, Clock, Users, Video, Globe, Sparkles } from 'lucide-react';
+import { X, Calendar as CalIcon, Users, Video, Globe, Sparkles } from 'lucide-react';
 
 const ScheduleMeetingModal = ({ onClose }) => {
   return (

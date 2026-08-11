@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Calendar, FileText, Percent, UserCheck, PhoneCall, Gift, Zap } from 'lucide-react';
+import { ArrowRight, Calendar, FileText, Percent, Zap } from 'lucide-react';
 
 const ActionAndStrategy = () => {
   

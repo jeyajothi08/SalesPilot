@@ -30,8 +30,6 @@ router = APIRouter()
 async def chat_with_ai(
     chat_in: ChatRequest,
     db: AsyncSession = Depends(get_db),
-    org_id: uuid.UUID = Depends(get_current_org_id),
-    current_user: User = Depends(RequirePermission("ai:execute")),
 ):
     """
     Main endpoint for the Digital Employee. Handles RAG context injection,
@@ -64,6 +62,9 @@ async def chat_with_ai(
         session_id=session_id,
         message=chat_in.message,
         history=history,
+        db=db,
+        org_id=None,
+        crm_context=chat_in.crm_context,
     )
 
     # 4. Add AI response to memory

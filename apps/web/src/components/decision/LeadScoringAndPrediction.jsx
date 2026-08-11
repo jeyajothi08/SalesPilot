@@ -1,6 +1,6 @@
 import React from 'react';
 import { Flame, Activity, TrendingUp, AlertTriangle } from 'lucide-react';
-import { motion } from 'framer-motion';
+// import { motion } from 'framer-motion';
 
 const LeadScoringAndPrediction = () => {
   return (

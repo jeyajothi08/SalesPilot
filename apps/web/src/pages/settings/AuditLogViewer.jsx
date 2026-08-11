@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Activity, Search, Calendar, Filter, Download } from 'lucide-react';
-import { motion } from 'framer-motion';
+import {  Search, Calendar, Filter, Download } from 'lucide-react';
+// import { motion } from 'framer-motion';
 
 export default function AuditLogViewer() {
   const [logs] = useState([

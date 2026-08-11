@@ -1,5 +1,5 @@
 import React from 'react';
-import { Activity, Cpu, HardDrive, Zap, CheckCircle2, AlertTriangle, Link2, Link2Off } from 'lucide-react';
+import { Activity, Cpu, HardDrive, Zap, CheckCircle2, Link2, Link2Off } from 'lucide-react';
 
 const APIs = [
   { name: 'OpenAI', status: 'Connected', usage: '1.2M tokens', latency: '24ms' },

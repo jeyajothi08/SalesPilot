@@ -15,7 +15,7 @@ export const TextInput = ({
   className = '',
   ...props
 }) => {
-  const [isFocused, setIsFocused] = useState(false);
+  const [_isFocused, setIsFocused] = useState(false);
 
   return (
     <div className={`flex flex-col gap-1.5 ${className}`}>

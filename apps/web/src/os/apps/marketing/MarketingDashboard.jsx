@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { 
   Megaphone, 
-  BarChart2, 
+   
   Mail, 
   MessageSquare, 
   Globe,

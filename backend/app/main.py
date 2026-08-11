@@ -15,6 +15,7 @@ from app.api.v1.endpoints import (
     health, auth, crm, ai, voice, communication,
     analytics, billing, marketing, omni_inbox,
     livechat_ws, organization, team, rbac, audit, security,
+    workflows,
 )
 from app.middleware.security import (
     RateLimitMiddleware,
@@ -122,6 +123,7 @@ def get_application() -> FastAPI:
     app.include_router(rbac.router,          prefix=f"{prefix}/rbac",          tags=["RBAC"])
     app.include_router(audit.router,         prefix=f"{prefix}/audit",         tags=["Audit"])
     app.include_router(security.router,      prefix=f"{prefix}/security",      tags=["Security"])
+    app.include_router(workflows.router,     prefix=f"{prefix}/workflows",     tags=["Workflows"])
 
     # ── Prometheus Metrics ────────────────────────────────────────────────
     try:

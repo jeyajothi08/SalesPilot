@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Plus, Edit2, Trash2, Tag, ArrowDownToLine } from 'lucide-react';
+import { Search, Plus, Edit2, Trash2, Tag } from 'lucide-react';
 
 const mockFaqs = [
   { id: 1, q: 'How much does a custom website cost?', a: 'Our custom websites start at $2,500. The final price depends on the number of pages, complexity of animations, and backend requirements.', category: 'Pricing' },

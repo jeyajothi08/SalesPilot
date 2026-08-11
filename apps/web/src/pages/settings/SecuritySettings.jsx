@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Shield, Smartphone, Key, Clock, AlertTriangle, CheckCircle, Copy, Eye, EyeOff, LogOut, Trash2, Download, QrCode } from 'lucide-react';
+import { Shield, Smartphone, Key, AlertTriangle, CheckCircle, Copy, Eye, EyeOff, LogOut, Trash2, Download, QrCode } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function SecuritySettings() {

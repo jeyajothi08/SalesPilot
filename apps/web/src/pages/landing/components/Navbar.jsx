@@ -1,7 +1,7 @@
 import React from 'react';
 import { Bot } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import {  useNavigate } from 'react-router-dom';
 import { isAuthenticated } from '../../../api/apiClient';
 
 export const Navbar = () => {

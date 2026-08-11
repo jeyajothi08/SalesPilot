@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Mail, Settings, ArrowRight, Trash2 } from 'lucide-react';
+import { Search, Mail, ArrowRight, Trash2 } from 'lucide-react';
 import { Button } from './atoms/Button';
 import { TextInput } from './atoms/TextInput';
 import { Badge } from './atoms/Badge';

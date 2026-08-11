@@ -1,5 +1,5 @@
 import React from 'react';
-import { Target, TrendingUp, PieChart as PieChartIcon } from 'lucide-react';
+import {  TrendingUp, PieChart as PieChartIcon } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
 
 const pipelineData = [

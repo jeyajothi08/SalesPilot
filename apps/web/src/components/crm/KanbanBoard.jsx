@@ -1,36 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import KanbanColumn from './KanbanColumn';
-import { crmAPI } from '../../api/crm';
+import { useCRM } from '../../context/CRMContext';
+import { DealDetailsModal } from '../../pages/landing/components/DealDetailsModal';
 
 const STAGES = [
-  { id: 'lead', title: 'Lead In' },
-  { id: 'qualified', title: 'Qualified' },
-  { id: 'proposal', title: 'Proposal Sent' },
-  { id: 'negotiation', title: 'Negotiation' },
-  { id: 'won', title: 'Closed Won' }
+  { id: 'lead_in', altId: 'lead', title: 'Lead In' },
+  { id: 'qualified', altId: 'contacted', title: 'Qualified' },
+  { id: 'proposal', altId: 'proposal', title: 'Proposal Sent' },
+  { id: 'negotiation', altId: 'negotiation', title: 'Negotiation' },
+  { id: 'won', altId: 'won', title: 'Closed Won' }
 ];
 
 export default function KanbanBoard() {
-  const [deals, setDeals] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    crmAPI.getDeals()
-      .then(data => {
-        setDeals(Array.isArray(data) ? data : []);
-      })
-      .catch(err => {
-        console.warn("Backend unavailable, loading dummy deals for UI interaction.");
-        setDeals([
-          { id: '1', title: 'Acme Corp Upgrade', value: 15000, company: 'Acme Corp', stage: 'qualified' },
-          { id: '2', title: 'Globex Setup', value: 5000, company: 'Globex Inc', stage: 'lead' },
-          { id: '3', title: 'Soylent Renewal', value: 25000, company: 'Soylent Corp', stage: 'proposal' },
-        ]);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+  const { deals, loading, updateDealStage, updateDeal, deleteDeal } = useCRM();
+  const [selectedDeal, setSelectedDeal] = useState(null);
 
   const handleDragStart = (e, dealId) => {
     e.dataTransfer.setData('dealId', dealId);
@@ -43,37 +26,66 @@ export default function KanbanBoard() {
   const handleDrop = async (e, stageId) => {
     e.preventDefault();
     const dealId = e.dataTransfer.getData('dealId');
-    
-    // Optimistic UI update
-    setDeals(prev => prev.map(deal => 
-      deal.id === dealId ? { ...deal, stage: stageId } : deal
-    ));
-
-    // API Call (catch error if backend doesn't exist)
-    try {
-      await crmAPI.updateDealStage(dealId, stageId);
-    } catch (err) {
-      console.warn("Backend unavailable, optimistic UI update persisted locally.");
+    if (dealId && stageId) {
+      await updateDealStage(dealId, stageId);
     }
   };
 
+  const handleSelectDeal = (deal) => {
+    setSelectedDeal(deal);
+  };
+
+  const handleUpdateDeal = (updatedData) => {
+    if (updatedData.stage && updatedData.stage !== selectedDeal?.stage) {
+      updateDealStage(updatedData.id, updatedData.stage);
+    }
+    updateDeal(updatedData.id, updatedData);
+    setSelectedDeal(prev => prev ? { ...prev, ...updatedData } : null);
+  };
+
+  const handleDeleteDeal = (dealId) => {
+    deleteDeal(dealId);
+    setSelectedDeal(null);
+  };
+
   if (loading) {
-    return <div className="p-8 text-white">Loading Pipeline...</div>;
+    return <div className="p-8 text-white flex items-center justify-center">Loading Pipeline...</div>;
   }
 
+  // Keep selectedDeal synced with live deals array
+  const currentSelectedDeal = selectedDeal ? deals.find(d => d.id === selectedDeal.id) || selectedDeal : null;
+
   return (
-    <div className="flex gap-6 overflow-x-auto pb-8 h-full items-start px-2">
-      {STAGES.map(stage => (
-        <KanbanColumn
-          key={stage.id}
-          id={stage.id}
-          title={stage.title}
-          deals={deals.filter(d => (d.stage || '').toLowerCase() === stage.id.toLowerCase())}
-          onDragStart={handleDragStart}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
+    <div className="flex gap-6 overflow-x-auto pb-8 h-full items-start px-2 relative">
+      {STAGES.map(stage => {
+        const stageDeals = deals.filter(d => {
+          const st = (d.stage || '').toLowerCase();
+          return st === stage.id || st === stage.altId || (stage.id === 'lead_in' && st === 'lead') || (stage.id === 'qualified' && st === 'contacted');
+        });
+
+        return (
+          <KanbanColumn
+            key={stage.id}
+            id={stage.id}
+            title={stage.title}
+            deals={stageDeals}
+            onDragStart={handleDragStart}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+            onSelectDeal={handleSelectDeal}
+          />
+        );
+      })}
+
+      {currentSelectedDeal && (
+        <DealDetailsModal
+          deal={currentSelectedDeal}
+          isOpen={!!currentSelectedDeal}
+          onClose={() => setSelectedDeal(null)}
+          onUpdateDeal={handleUpdateDeal}
+          onDeleteDeal={handleDeleteDeal}
         />
-      ))}
+      )}
     </div>
   );
 }

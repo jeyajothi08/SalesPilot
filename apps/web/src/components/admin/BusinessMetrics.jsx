@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, BarChart2, PieChart } from 'lucide-react';
+import { TrendingUp, BarChart2 } from 'lucide-react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart as RechartsBarChart, Bar } from 'recharts';
 
 const revenueData = [

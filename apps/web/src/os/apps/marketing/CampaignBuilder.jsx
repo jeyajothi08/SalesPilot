@@ -68,7 +68,7 @@ export default function CampaignBuilder({ onBack }) {
             style={{ width: `${((step - 1) / (steps.length - 1)) * 100}%` }}
           />
           
-          {steps.map((s, i) => (
+          {steps.map((s, _i) => (
             <div key={s.id} className="relative z-10 flex flex-col items-center">
               <div 
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${

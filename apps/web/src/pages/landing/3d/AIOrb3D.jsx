@@ -55,7 +55,7 @@ const Particles = ({ count = 500 }) => {
     return temp;
   }, [count]);
 
-  useFrame((state) => {
+  useFrame((_state) => {
     particles.forEach((particle, i) => {
       let { t, factor, speed, xFactor, yFactor, zFactor } = particle;
       t = particle.t += speed / 2;

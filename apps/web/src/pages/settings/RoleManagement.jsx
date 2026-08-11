@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Shield, Plus, MoreVertical, Check, X } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { Shield, Plus } from 'lucide-react';
+// import { motion } from 'framer-motion';
 
 export default function RoleManagement() {
   const [roles] = useState([

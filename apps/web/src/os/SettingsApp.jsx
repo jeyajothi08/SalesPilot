@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Settings, Users, Shield, Activity, Building, Lock } from 'lucide-react';
-import { motion } from 'framer-motion';
+// import { motion } from 'framer-motion';
 import { Window } from './Window';
 
 import OrganizationSettings from '../pages/settings/OrganizationSettings';

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { Search, Filter, MoreHorizontal, PhoneCall, Mail, MessageSquare } from 'lucide-react';
 
 const RecentCallsTable = () => {
-  const [filter, setFilter] = useState('All');
+  const [_filter, _setFilter] = useState('All');
 
   const calls = [
     { id: 1, name: 'Michael Scott', phone: '+1 (555) 123-4567', service: 'SaaS Demo', score: 92, duration: '04:12', status: 'Converted', type: 'call' },

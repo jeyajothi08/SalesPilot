@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { 
   Bot, LayoutDashboard, Phone, Users, Calendar, Mail, 
-  MessageSquare, BookOpen, BarChart2, PieChart, Settings, LogOut 
+   BookOpen, BarChart2, PieChart, Settings, LogOut 
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 

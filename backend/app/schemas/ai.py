@@ -1,4 +1,4 @@
-﻿from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field
 from typing import Optional, List, Dict, Any
 import uuid
 
@@ -16,6 +16,7 @@ class ChatRequest(BaseModel):
     message: str
     model: str = "gpt-4-turbo"
     use_rag: bool = True
+    crm_context: Optional[List[Dict[str, Any]]] = None
 
 
 class ChatResponse(BaseModel):

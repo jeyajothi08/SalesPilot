@@ -157,10 +157,10 @@ const ProposalBuilder = ({ onCancel }) => {
   );
 };
 
-const StepIndicator = ({ current, number, label, icon }) => {
+const StepIndicator = ({ current, number, label, _icon }) => {
   const isPast = current > number;
   const isActive = current === number;
-  const isFuture = current < number;
+  const _isFuture = current < number;
 
   return (
     <div className="flex items-center gap-3">

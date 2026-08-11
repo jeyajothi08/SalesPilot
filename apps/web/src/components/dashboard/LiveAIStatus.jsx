@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Bot, Phone, Clock, ShieldCheck, Activity } from 'lucide-react';
+import { Bot, Clock, ShieldCheck } from 'lucide-react';
 
 const LiveAIStatus = () => {
   return (

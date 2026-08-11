@@ -4,7 +4,7 @@ import { Sparkles, Calendar, TrendingUp, PhoneCall, Bell } from 'lucide-react';
 import { Card } from '../../design-system/molecules/Card';
 import { AIAvatar } from '../../design-system/ai/AIAvatar';
 
-export const MobileHome = ({ onNavigate }) => {
+export const MobileHome = ({ _onNavigate }) => {
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.95 }}

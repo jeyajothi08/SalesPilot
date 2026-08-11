@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Brain, FileText, Play, CheckCircle } from 'lucide-react';
+import { Brain, FileText, CheckCircle } from 'lucide-react';
 import { Card } from '../../../design-system/molecules/Card';
 
 gsap.registerPlugin(ScrollTrigger);

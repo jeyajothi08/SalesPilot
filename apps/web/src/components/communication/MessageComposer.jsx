@@ -14,7 +14,7 @@ const MessageComposer = ({ onClose }) => {
 
   // Manual Inputs
   const [to, setTo] = useState('');
-  const [cc, setCc] = useState('');
+  const [_cc, _setCc] = useState('');
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
 

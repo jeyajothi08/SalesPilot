@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bot, ArrowRight, Lock, CheckCircle, AlertCircle } from 'lucide-react';
+import { Bot, Lock, CheckCircle, AlertCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
 const ResetPassword = () => {

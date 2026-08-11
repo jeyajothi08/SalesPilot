@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import Lenis from 'lenis';
+import { Link } from 'react-router-dom';
 
 // Import all modern, modular sections
 import { Navbar } from './components/Navbar';
@@ -60,11 +61,11 @@ const LandingPage = () => {
        
        <Footer />
 
-       {/* Floating button to launch OS dashboard (for development/testing) */}
-       <div className="fixed bottom-4 right-4 z-[999]">
-          <a href="#os" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-bold shadow-lg transition-colors border border-blue-500/50">
+       {/* Floating button to launch OS dashboard */}
+       <div className="fixed bottom-4 right-4 z-999">
+          <Link to="/app" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-full font-bold shadow-lg transition-colors border border-blue-500/50 block">
             Launch OS Dashboard
-          </a>
+          </Link>
        </div>
     </main>
   );

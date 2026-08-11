@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Users, UserPlus, MoreVertical, Search, Filter, Shield, Briefcase } from 'lucide-react';
-import { motion } from 'framer-motion';
+import {  UserPlus, MoreVertical, Search, Filter, Shield, Briefcase } from 'lucide-react';
+// import { motion } from 'framer-motion';
 
 export default function TeamManagement() {
   const [members] = useState([

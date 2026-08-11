@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Save, ArrowLeft, Copy, Check, FileText, Image as ImageIcon, Send } from 'lucide-react';
+import { Sparkles, Save, ArrowLeft, Copy, Check, FileText, Image as ImageIcon, Send, Megaphone } from 'lucide-react';
 
 export default function AIContentEditor({ onBack }) {
   const [contentType, setContentType] = useState('blog');

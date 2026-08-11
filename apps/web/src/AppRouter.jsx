@@ -18,6 +18,8 @@ import {
 } from 'react-router-dom';
 import { isAuthenticated } from './api/apiClient';
 
+import { CRMProvider } from './context/CRMContext';
+
 // Lazy-loaded pages for code splitting
 const LandingPage = lazy(() => import('./pages/landing/LandingPage'));
 const FeaturesPage = lazy(() => import('./pages/FeaturesPage'));
@@ -81,7 +83,9 @@ export const AppRouter = () => {
             path="/app/*"
             element={
               <ProtectedRoute>
-                <ResponsiveOS />
+                <CRMProvider>
+                  <ResponsiveOS />
+                </CRMProvider>
               </ProtectedRoute>
             }
           />

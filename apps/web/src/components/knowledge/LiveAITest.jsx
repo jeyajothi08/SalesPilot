@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Send, Bot, User, CornerDownLeft } from 'lucide-react';
+import {  Bot, User, CornerDownLeft } from 'lucide-react';
 
 const mockChat = [
   { id: 1, sender: 'ai', text: 'Hello! I am Alpha, your AI Sales Employee. I have just been trained on your latest company data. What would you like to test?', time: 'Just now' }
