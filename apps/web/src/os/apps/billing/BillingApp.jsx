@@ -62,7 +62,7 @@ export const BillingApp = ({ isActive, onClose, onFocus }) => {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             onClick={onFocus}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-225 h-162.5 bg-black/90 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden z-40"
+            className="absolute inset-0 w-full h-full bg-black/90 backdrop-blur-xl flex flex-col overflow-hidden z-40"
         >
             {/* Window Header */}
             <div className="h-12 border-b border-white/10 flex items-center justify-between px-4 bg-white/5 relative">
