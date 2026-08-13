@@ -30,7 +30,12 @@ logger = structlog.get_logger()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("application_startup", message="SalesPilot AI Backend starting...")
-    # Future: initialise connection pools, warm caches, etc.
+    try:
+        from app.database.session import init_db
+        await init_db()
+        logger.info("database_init_success", message="Database tables initialized and seeded successfully.")
+    except Exception as e:
+        logger.error("database_init_error", error=str(e))
     yield
     logger.info("application_shutdown", message="SalesPilot AI Backend shutting down.")
 
@@ -47,7 +52,12 @@ def get_application() -> FastAPI:
         lifespan=lifespan,
     )
 
-    # ── CORS ─────────────────────────────────────────────────────────────────
+    # ── Security Middleware ──────────────────────────────────────────────────
+    app.add_middleware(SecurityHeadersMiddleware)
+    app.add_middleware(RateLimitMiddleware)
+    app.add_middleware(RequestValidationMiddleware)
+
+    # ── CORS (Added last so it wraps outermost to handle all responses) ─────
     if settings.BACKEND_CORS_ORIGINS:
         app.add_middleware(
             CORSMiddleware,
@@ -58,10 +68,6 @@ def get_application() -> FastAPI:
             allow_headers=["*"],
         )
 
-    # ── Security Middleware (outermost applied first) ──────────────────────
-    app.add_middleware(SecurityHeadersMiddleware)
-    app.add_middleware(RateLimitMiddleware)
-    app.add_middleware(RequestValidationMiddleware)
 
     # ── Global Exception Handlers ─────────────────────────────────────────
     @app.exception_handler(StarletteHTTPException)

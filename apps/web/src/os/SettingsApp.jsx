@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Settings, Users, Shield, Activity, Building, Lock } from 'lucide-react';
-// import { motion } from 'framer-motion';
 import { Window } from './Window';
 
 import OrganizationSettings from '../pages/settings/OrganizationSettings';
@@ -30,27 +29,27 @@ export const SettingsApp = ({ id, isActive, onFocus, onClose }) => {
       defaultWidth={1000}
       defaultHeight={700}
     >
-      <div className="flex h-full bg-gray-50/50">
+      <div className="flex h-full bg-[#050816] text-[#F8FAFC]">
         {/* Sidebar */}
-        <div className="w-64 bg-white border-r border-gray-200 flex flex-col pt-4">
+        <div className="w-64 bg-[#070B18]/80 border-r border-slate-800 flex flex-col pt-4">
           <div className="px-6 mb-4">
-            <h2 className="text-lg font-bold text-gray-900 flex items-center">
-              <Settings size={20} className="mr-2 text-gray-700" />
+            <h2 className="text-base font-bold text-white flex items-center">
+              <Settings size={18} className="mr-2 text-[#3B82F6]" />
               Settings
             </h2>
           </div>
-          <nav className="flex-1 px-4 space-y-1">
+          <nav className="flex-1 px-3 space-y-1">
             {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
+                className={`w-full flex items-center px-3 py-2.5 text-xs font-semibold rounded-xl transition-all cursor-pointer border-none ${
                   activeTab === tab.id 
-                    ? 'bg-blue-50 text-blue-700' 
-                    : 'text-gray-600 hover:bg-gray-100'
+                    ? 'bg-[#2563EB]/20 border border-[#3B82F6]/40 text-white shadow-md' 
+                    : 'text-slate-400 hover:bg-slate-800/50 hover:text-white'
                 }`}
               >
-                <tab.icon size={18} className={`mr-3 ${activeTab === tab.id ? 'text-blue-600' : 'text-gray-400'}`} />
+                <tab.icon size={16} className={`mr-3 ${activeTab === tab.id ? 'text-[#3B82F6]' : 'text-slate-500'}`} />
                 {tab.label}
               </button>
             ))}
@@ -58,7 +57,7 @@ export const SettingsApp = ({ id, isActive, onFocus, onClose }) => {
         </div>
 
         {/* Content Area */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto p-6 bg-[#050816] custom-scrollbar">
            {activeTab === 'organization' && <OrganizationSettings />}
            {activeTab === 'team' && <TeamManagement />}
            {activeTab === 'roles' && <RoleManagement />}

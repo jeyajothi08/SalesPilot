@@ -40,7 +40,6 @@ export default function OrganizationSettings() {
     fetchOrg();
   }, []);
 
-  // FIXED: was a no-op setTimeout — now calls real API
   const handleSave = async () => {
     setIsSaving(true);
     setSaveStatus(null);
@@ -67,16 +66,16 @@ export default function OrganizationSettings() {
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto p-6 flex items-center justify-center h-64">
-        <Loader className="animate-spin text-blue-500" size={32} />
+        <Loader className="animate-spin text-[#3B82F6]" size={32} />
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-8 font-sans">
+    <div className="max-w-4xl mx-auto p-6 space-y-8 font-sans text-[#F8FAFC]">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Organization Settings</h1>
-        <p className="text-gray-500 mt-1">Manage your company's profile, branding, and core settings.</p>
+        <h1 className="text-2xl font-extrabold text-[#F8FAFC]">Organization Settings</h1>
+        <p className="text-[#94A3B8] mt-1 text-sm">Manage your company's profile, branding, and core settings.</p>
       </div>
 
       {/* Status Banner */}
@@ -84,33 +83,33 @@ export default function OrganizationSettings() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-2 px-4 py-3 bg-green-50 border border-green-200 rounded-lg text-green-700"
+          className="flex items-center gap-2 px-4 py-3 bg-emerald-500/15 border border-emerald-500/30 rounded-xl text-emerald-400"
         >
           <CheckCircle size={16} />
-          <span className="text-sm font-medium">Settings saved successfully.</span>
+          <span className="text-sm font-semibold">Settings saved successfully.</span>
         </motion.div>
       )}
       {saveStatus === 'error' && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-2 px-4 py-3 bg-red-50 border border-red-200 rounded-lg text-red-700"
+          className="flex items-center gap-2 px-4 py-3 bg-red-500/15 border border-red-500/30 rounded-xl text-red-400"
         >
           <AlertCircle size={16} />
-          <span className="text-sm font-medium">{errorMessage}</span>
+          <span className="text-sm font-semibold">{errorMessage}</span>
         </motion.div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="p-6 border-b border-gray-100 flex items-center justify-between">
+      <div className="bg-[#0F172A] rounded-2xl border border-[#1E293B] overflow-hidden shadow-xl">
+        <div className="p-6 border-b border-[#1E293B] bg-[#070B14] flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-gray-800">General Profile</h2>
-            <p className="text-sm text-gray-500">This information will be displayed on customer-facing pages.</p>
+            <h2 className="text-lg font-extrabold text-[#F8FAFC]">General Profile</h2>
+            <p className="text-sm text-[#94A3B8]">This information will be displayed on customer-facing pages.</p>
           </div>
           <button
             onClick={handleSave}
             disabled={isSaving}
-            className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-medium rounded-lg transition-colors"
+            className="flex items-center px-4 py-2 bg-[#2563EB] hover:bg-[#1D4ED8] disabled:opacity-60 disabled:cursor-not-allowed text-white text-sm font-semibold rounded-xl transition-colors shadow-lg shadow-blue-500/20 cursor-pointer"
           >
             {isSaving ? (
               <Loader size={16} className="mr-2 animate-spin" />
@@ -123,30 +122,30 @@ export default function OrganizationSettings() {
 
         <div className="p-6 space-y-6">
           <div className="flex items-start space-x-6">
-            <div className="w-24 h-24 rounded-lg border-2 border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-blue-500 hover:text-blue-500 transition-colors cursor-pointer bg-gray-50">
-              <ImageIcon size={24} className="mb-2" />
-              <span className="text-xs font-medium">Upload Logo</span>
+            <div className="w-24 h-24 rounded-2xl border-2 border-dashed border-[#263247] flex flex-col items-center justify-center text-[#64748B] hover:border-[#3B82F6] hover:text-[#3B82F6] transition-colors cursor-pointer bg-[#070B14]">
+              <ImageIcon size={24} className="mb-2 text-[#3B82F6]" />
+              <span className="text-xs font-semibold text-[#94A3B8]">Upload Logo</span>
             </div>
             <div className="flex-1 space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Organization Name</label>
+                <label className="block text-sm font-semibold text-[#E2E8F0] mb-1.5">Organization Name</label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#94A3B8]">
                     <Building size={16} />
                   </div>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full pl-10 pr-4 py-2.5 bg-[#070B14] border border-[#263247] rounded-xl text-[#F8FAFC] placeholder-[#64748B] focus:border-[#3B82F6] outline-none text-sm"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Primary Domain</label>
+                <label className="block text-sm font-semibold text-[#E2E8F0] mb-1.5">Primary Domain</label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#64748B]">
                     <Globe size={16} />
                   </div>
                   <input
@@ -154,22 +153,22 @@ export default function OrganizationSettings() {
                     value={formData.domain}
                     readOnly
                     disabled
-                    className="w-full pl-10 pr-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
+                    className="w-full pl-10 pr-4 py-2.5 border border-[#1E293B] rounded-xl bg-[#070B14]/60 text-[#64748B] cursor-not-allowed text-sm"
                     title="Domain cannot be changed after registration"
                   />
                 </div>
-                <p className="text-xs text-gray-400 mt-1">Domain is set during registration and cannot be changed.</p>
+                <p className="text-xs text-[#64748B] mt-1">Domain is set during registration and cannot be changed.</p>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-6 pt-6 border-t border-gray-100">
+          <div className="grid grid-cols-2 gap-6 pt-6 border-t border-[#1E293B]">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Timezone</label>
+              <label className="block text-sm font-semibold text-[#E2E8F0] mb-1.5">Timezone</label>
               <select
                 value={formData.timezone}
                 onChange={(e) => setFormData({ ...formData, timezone: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                className="w-full px-3.5 py-2.5 border border-[#263247] rounded-xl bg-[#070B14] text-[#F8FAFC] focus:border-[#3B82F6] outline-none text-sm cursor-pointer"
               >
                 <option value="UTC">UTC (Coordinated Universal Time)</option>
                 <option value="America/New_York">EST (Eastern Standard Time)</option>
@@ -184,11 +183,11 @@ export default function OrganizationSettings() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Default Currency</label>
+              <label className="block text-sm font-semibold text-[#E2E8F0] mb-1.5">Default Currency</label>
               <select
                 value={formData.currency}
                 onChange={(e) => setFormData({ ...formData, currency: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                className="w-full px-3.5 py-2.5 border border-[#263247] rounded-xl bg-[#070B14] text-[#F8FAFC] focus:border-[#3B82F6] outline-none text-sm cursor-pointer"
               >
                 <option value="USD">USD ($)</option>
                 <option value="EUR">EUR (€)</option>

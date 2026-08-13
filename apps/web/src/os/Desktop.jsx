@@ -55,6 +55,15 @@ export const Desktop = () => {
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
 
+  // Listen for global custom events (e.g. open-call-workspace from Customer 360 or Command Palette)
+  useEffect(() => {
+    const handleCallEvent = (_e) => {
+      handleOpenApp('voice');
+    };
+    window.addEventListener('open-call-workspace', handleCallEvent);
+    return () => window.removeEventListener('open-call-workspace', handleCallEvent);
+  }, []);
+
   const handleOpenApp = (appId) => {
     if (!openApps.find(app => app.id === appId)) {
       setOpenApps(prev => [...prev, { id: appId }]);

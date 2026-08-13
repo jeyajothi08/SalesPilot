@@ -28,6 +28,18 @@ class TTSRequest(BaseModel):
     language: Optional[str] = "en-US"
 
 
+@router.get("/status")
+async def get_telephony_status():
+    """Returns whether real telephony provider (Twilio) is configured."""
+    is_configured = bool(settings.TWILIO_ACCOUNT_SID and settings.TWILIO_AUTH_TOKEN)
+    return {
+        "configured": is_configured,
+        "provider": "Twilio" if is_configured else None,
+        "phone_number": settings.TWILIO_PHONE_NUMBER if is_configured else None,
+        "message": "Telephony provider configured" if is_configured else "Voice calling isn't configured yet. Connect your telephony provider to make real calls."
+    }
+
+
 @router.post("/transcribe")
 async def transcribe_audio_file(
     audio: UploadFile = File(...),

@@ -37,20 +37,24 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-bg-secondary flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-[#050816] text-[#F8FAFC] flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden font-sans">
       {/* Background Orbs */}
-      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/20 rounded-full blur-[100px]" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-accent-purple/20 rounded-full blur-[100px]" />
+      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-[#2563EB]/10 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-accent-purple/10 rounded-full blur-[120px] pointer-events-none" />
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-        <Link to="/" className="flex justify-center items-center space-x-2 mb-8">
-          <Bot className="w-8 h-8 text-primary" />
-          <span className="text-2xl font-semibold tracking-tight text-text-main">SalesPilot</span>
+      <div className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 text-center">
+        <Link to="/" className="inline-flex items-center space-x-3 mb-8 group">
+          <div className="w-10 h-10 rounded-xl bg-[#2563EB]/15 border border-[#3B82F6]/30 flex items-center justify-center group-hover:scale-105 transition-transform shadow-lg shadow-blue-500/10">
+            <Bot className="w-6 h-6 text-[#3B82F6]" />
+          </div>
+          <span className="text-2xl font-extrabold tracking-tight text-[#F8FAFC]">
+            SalesPilot<span className="text-[#3B82F6]">.ai</span>
+          </span>
         </Link>
-        <h2 className="text-center text-3xl font-bold tracking-tight text-text-main">
+        <h2 className="text-center text-3xl font-extrabold tracking-tight text-[#F8FAFC]">
           Set new password
         </h2>
-        <p className="mt-2 text-center text-sm text-text-muted font-light">
+        <p className="mt-2 text-center text-sm text-[#94A3B8] font-normal">
           Your new password must be different to previously used passwords.
         </p>
       </div>
@@ -61,23 +65,23 @@ const ResetPassword = () => {
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10"
       >
-        <div className="glass-card py-8 px-4 sm:px-10 bg-white/80">
+        <div className="bg-[#0F172A]/80 border border-[#263247] py-8 px-6 sm:px-10 rounded-2xl shadow-2xl backdrop-blur-xl">
           
           {error && (
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start space-x-3">
-               <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
-               <p className="text-sm text-red-700">{error}</p>
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-xl flex items-start space-x-3 text-[#FCA5A5]">
+               <AlertCircle className="w-5 h-5 text-[#EF4444] shrink-0 mt-0.5" />
+               <p className="text-sm font-semibold">{error}</p>
             </motion.div>
           )}
 
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-text-main">
-                New Password
+              <label htmlFor="password" className="block text-sm font-semibold text-[#E2E8F0] mb-1.5">
+                New Password <span className="text-[#EF4444] font-bold">*</span>
               </label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-text-muted" aria-hidden="true" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#94A3B8]">
+                  <Lock className="h-5 w-5" aria-hidden="true" />
                 </div>
                 <input
                   id="password"
@@ -86,19 +90,19 @@ const ResetPassword = () => {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-border rounded-xl shadow-sm placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all sm:text-sm bg-bg-primary"
+                  className="block w-full pl-11 pr-4 h-12 bg-[#070B14] border border-[#263247] hover:border-slate-600 focus:border-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6]/20 rounded-xl text-[#F8FAFC] placeholder-[#64748B] text-sm focus:outline-none transition-all shadow-inner"
                   placeholder="••••••••"
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-text-main">
-                Confirm Password
+              <label htmlFor="confirmPassword" className="block text-sm font-semibold text-[#E2E8F0] mb-1.5">
+                Confirm Password <span className="text-[#EF4444] font-bold">*</span>
               </label>
-              <div className="mt-1 relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <CheckCircle className="h-5 w-5 text-text-muted" aria-hidden="true" />
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-[#94A3B8]">
+                  <CheckCircle className="h-5 w-5" aria-hidden="true" />
                 </div>
                 <input
                   id="confirmPassword"
@@ -107,7 +111,7 @@ const ResetPassword = () => {
                   required
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="appearance-none block w-full pl-10 pr-3 py-3 border border-border rounded-xl shadow-sm placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all sm:text-sm bg-bg-primary"
+                  className="block w-full pl-11 pr-4 h-12 bg-[#070B14] border border-[#263247] hover:border-slate-600 focus:border-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6]/20 rounded-xl text-[#F8FAFC] placeholder-[#64748B] text-sm focus:outline-none transition-all shadow-inner"
                   placeholder="••••••••"
                 />
               </div>
@@ -117,7 +121,7 @@ const ResetPassword = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex justify-center items-center space-x-2 py-3 px-4 btn-primary text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-70"
+                className="w-full flex justify-center items-center space-x-2 h-12 bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-bold text-sm rounded-xl transition-all shadow-lg shadow-blue-500/20 disabled:opacity-60 cursor-pointer"
               >
                 {isLoading ? (
                   <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>

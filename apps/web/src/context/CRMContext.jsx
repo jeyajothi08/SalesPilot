@@ -76,16 +76,15 @@ export const CRMProvider = ({ children }) => {
     setError(null);
     try {
       const data = await crmAPI.getDeals();
-      if (Array.isArray(data) && data.length > 0) {
+      if (Array.isArray(data)) {
         setDeals(data.map(normalizeDealObject));
       } else {
-        // Fallback to showcase deals if API returns empty array
-        setDeals(INITIAL_SHOWCASE_DEALS.map(normalizeDealObject));
+        setDeals([]);
       }
     } catch (err) {
-      console.warn('CRM API unavailable, initializing with local CRM showcase data.', err);
-      setDeals(INITIAL_SHOWCASE_DEALS.map(normalizeDealObject));
-      setError('Backend offline — running in local state mode.');
+      console.warn('CRM API error:', err);
+      setDeals([]);
+      setError('Failed to fetch deals from server.');
     } finally {
       setLoading(false);
     }

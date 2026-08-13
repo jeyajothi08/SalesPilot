@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Bot, ArrowRight, Mail, Lock, User, Building, Phone, AlertCircle } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authAPI } from '../api/auth';
+import { setTokens } from '../api/apiClient';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -86,10 +87,7 @@ const Register = () => {
         formData.password
       );
       
-      localStorage.setItem('access_token', access_token);
-      if (refresh_token) {
-        localStorage.setItem('refresh_token', refresh_token);
-      }
+      setTokens(access_token, refresh_token);
       navigate('/app', { replace: true });
     } catch (err) {
       console.error('[Register] Registration error:', err);

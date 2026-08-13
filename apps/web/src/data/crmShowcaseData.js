@@ -330,6 +330,7 @@ export const INITIAL_INTEGRATIONS = [
 
 export const STAGE_CONFIG = {
   lead_in: { title: 'Lead In', color: 'from-blue-500/20 to-blue-600/5', border: 'border-blue-500/30', badge: 'bg-blue-500/20 text-blue-300 border-blue-500/30' },
+  contacted: { title: 'Contacted', color: 'from-purple-500/20 to-purple-600/5', border: 'border-purple-500/30', badge: 'bg-purple-500/20 text-purple-300 border-purple-500/30' },
   qualified: { title: 'Qualified', color: 'from-purple-500/20 to-purple-600/5', border: 'border-purple-500/30', badge: 'bg-purple-500/20 text-purple-300 border-purple-500/30' },
   proposal: { title: 'Proposal Sent', color: 'from-amber-500/20 to-amber-600/5', border: 'border-amber-500/30', badge: 'bg-amber-500/20 text-amber-300 border-amber-500/30' },
   negotiation: { title: 'Negotiation', color: 'from-indigo-500/20 to-indigo-600/5', border: 'border-indigo-500/30', badge: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' },

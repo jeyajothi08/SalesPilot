@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import {  Search, Calendar, Filter, Download } from 'lucide-react';
-// import { motion } from 'framer-motion';
+import { Search, Calendar, Filter, Download } from 'lucide-react';
 
 export default function AuditLogViewer() {
   const [logs] = useState([
@@ -12,39 +11,39 @@ export default function AuditLogViewer() {
   ]);
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6 font-sans">
+    <div className="max-w-6xl mx-auto p-6 space-y-6 font-sans text-[#F8FAFC]">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Audit Logs</h1>
-          <p className="text-gray-500 mt-1">Enterprise compliance and security event monitoring.</p>
+          <h1 className="text-2xl font-extrabold text-[#F8FAFC]">Audit Logs</h1>
+          <p className="text-[#94A3B8] mt-1 text-sm">Enterprise compliance and security event monitoring.</p>
         </div>
-        <button className="flex items-center px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 text-sm font-medium rounded-lg transition-colors shadow-sm">
-          <Download size={16} className="mr-2" /> Export CSV
+        <button className="flex items-center px-4 py-2 bg-[#0F172A] border border-[#263247] hover:bg-[#1E293B] text-[#F8FAFC] text-sm font-semibold rounded-xl transition-colors shadow-sm cursor-pointer">
+          <Download size={16} className="mr-2 text-[#3B82F6]" /> Export CSV
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-[#0F172A] rounded-2xl border border-[#1E293B] overflow-hidden shadow-xl">
         {/* Toolbar */}
-        <div className="p-4 border-b border-gray-100 flex items-center justify-between bg-gray-50/50">
+        <div className="p-4 border-b border-[#1E293B] flex items-center justify-between bg-[#070B14]">
           <div className="flex items-center space-x-3 w-full max-w-2xl">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#64748B]" size={16} />
               <input 
                 type="text" 
                 placeholder="Search events, users, or IPs..." 
-                className="w-full pl-9 pr-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full pl-10 pr-4 py-2 bg-[#0F172A] border border-[#263247] rounded-xl text-sm text-[#F8FAFC] placeholder-[#64748B] focus:border-[#3B82F6] outline-none"
               />
             </div>
             <div className="relative w-48">
-              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
-              <select className="w-full pl-9 pr-3 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none">
+              <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#64748B]" size={16} />
+              <select className="w-full pl-10 pr-3 py-2 bg-[#0F172A] border border-[#263247] rounded-xl text-sm text-[#F8FAFC] focus:border-[#3B82F6] outline-none appearance-none cursor-pointer">
                  <option>Last 7 Days</option>
                  <option>Last 30 Days</option>
                  <option>This Month</option>
                  <option>Custom Range</option>
               </select>
             </div>
-            <button className="p-2 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 text-gray-500 transition-colors">
+            <button className="p-2 border border-[#263247] rounded-xl bg-[#0F172A] hover:bg-[#1E293B] text-[#94A3B8] transition-colors cursor-pointer">
               <Filter size={16} />
             </button>
           </div>
@@ -54,7 +53,7 @@ export default function AuditLogViewer() {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-gray-100 bg-gray-50 text-xs uppercase tracking-wider text-gray-500 font-medium">
+              <tr className="border-b border-[#1E293B] bg-[#070B14] text-xs uppercase tracking-wider text-[#94A3B8] font-semibold">
                 <th className="px-6 py-4">Event Action</th>
                 <th className="px-6 py-4">Resource</th>
                 <th className="px-6 py-4">Actor / User</th>
@@ -62,28 +61,28 @@ export default function AuditLogViewer() {
                 <th className="px-6 py-4 text-right">Timestamp</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-[#1E293B]">
               {logs.map((log) => (
-                <tr key={log.id} className="hover:bg-gray-50/50 transition-colors font-mono text-xs">
+                <tr key={log.id} className="hover:bg-[#1E293B]/40 transition-colors font-mono text-xs">
                   <td className="px-6 py-4">
                     <div className="flex items-center">
                        <span className={`w-2 h-2 rounded-full mr-3 ${
-                         log.status === 'success' ? 'bg-green-500' :
-                         log.status === 'warning' ? 'bg-amber-500' : 'bg-red-500'
+                         log.status === 'success' ? 'bg-emerald-400' :
+                         log.status === 'warning' ? 'bg-amber-400' : 'bg-red-400'
                        }`} />
-                       <span className="text-gray-900 font-semibold">{log.action}</span>
+                       <span className="text-[#F8FAFC] font-semibold">{log.action}</span>
                     </div>
                   </td>
-                  <td className="px-6 py-4 text-gray-600">
+                  <td className="px-6 py-4 text-[#CBD5E1]">
                     {log.resource}
                   </td>
-                  <td className="px-6 py-4 text-blue-600 hover:underline cursor-pointer">
+                  <td className="px-6 py-4 text-[#60A5FA] hover:underline cursor-pointer">
                     {log.user}
                   </td>
-                  <td className="px-6 py-4 text-gray-500">
+                  <td className="px-6 py-4 text-[#94A3B8]">
                     {log.ip}
                   </td>
-                  <td className="px-6 py-4 text-right text-gray-400 font-sans text-sm">
+                  <td className="px-6 py-4 text-right text-[#64748B] font-sans text-sm">
                     {log.time}
                   </td>
                 </tr>
@@ -93,11 +92,11 @@ export default function AuditLogViewer() {
         </div>
         
         {/* Pagination */}
-        <div className="p-4 border-t border-gray-100 bg-gray-50/50 flex items-center justify-between text-sm text-gray-500">
+        <div className="p-4 border-t border-[#1E293B] bg-[#070B14] flex items-center justify-between text-sm text-[#94A3B8]">
            <span>Showing 1 to 5 of 2,491 entries</span>
-           <div className="flex space-x-1">
-              <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 disabled:opacity-50" disabled>Prev</button>
-              <button className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50">Next</button>
+           <div className="flex space-x-2">
+              <button className="px-3 py-1 bg-[#0F172A] border border-[#263247] rounded-lg hover:bg-[#1E293B] disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer" disabled>Prev</button>
+              <button className="px-3 py-1 bg-[#0F172A] border border-[#263247] rounded-lg hover:bg-[#1E293B] cursor-pointer">Next</button>
            </div>
         </div>
       </div>

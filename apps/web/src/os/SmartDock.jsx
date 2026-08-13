@@ -1,17 +1,17 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Users, MessageSquare, FileText, Settings, Search, Sparkles, Network, Bot } from 'lucide-react';
+import { LayoutDashboard, Users, Phone, Mail, MessageSquare, FileText, Settings, Search, Sparkles, Network, Bot } from 'lucide-react';
 
 export const SmartDock = ({ onAppClick, openApps = [] }) => {
   const apps = [
-    { id: 'agents', label: 'AI Agent Center', icon: <Bot className="w-4 h-4 text-purple-400" />, color: 'bg-purple-500/20' },
+    { id: 'agents', label: 'AI Agents', icon: <Bot className="w-4 h-4 text-purple-400" />, color: 'bg-purple-500/20' },
+    { id: 'crm', label: 'CRM Engine', icon: <Users className="w-4 h-4 text-blue-400" />, color: 'bg-blue-500/20' },
+    { id: 'voice', label: 'Calling Workspace', icon: <Phone className="w-4 h-4 text-emerald-400" />, color: 'bg-emerald-500/20' },
+    { id: 'communication', label: 'Email & Messages', icon: <Mail className="w-4 h-4 text-amber-400" />, color: 'bg-amber-500/20' },
+    { id: 'workflow', label: 'Workflows', icon: <Network className="w-4 h-4 text-cyan-400" />, color: 'bg-cyan-500/20' },
+    { id: 'analytics', label: 'Analytics', icon: <LayoutDashboard className="w-4 h-4 text-indigo-400" />, color: 'bg-indigo-500/20' },
     { id: 'copilot', label: 'AI Copilot', icon: <Sparkles className="w-4 h-4 text-blue-400" />, color: 'bg-blue-500/20' },
-    { id: 'workflow', label: 'Automations', icon: <Network className="w-4 h-4 text-cyan-400" />, color: 'bg-cyan-500/20' },
-    { id: 'crm', label: 'CRM', icon: <Users className="w-4 h-4 text-blue-400" />, color: 'bg-blue-500/20' },
-    { id: 'analytics', label: 'Analytics', icon: <LayoutDashboard className="w-4 h-4 text-blue-300" />, color: 'bg-blue-600/20' },
-    { id: 'voice', label: 'Voice Calls', icon: <MessageSquare className="w-4 h-4 text-blue-400" />, color: 'bg-blue-500/20' },
-    { id: 'billing', label: 'Billing', icon: <FileText className="w-4 h-4 text-cyan-400" />, color: 'bg-cyan-500/20' },
-    { id: 'proposals', label: 'Proposals', icon: <FileText className="w-4 h-4 text-blue-400" />, color: 'bg-blue-500/20' },
+    { id: 'billing', label: 'Billing', icon: <FileText className="w-4 h-4 text-slate-400" />, color: 'bg-slate-500/20' },
   ];
 
   return (

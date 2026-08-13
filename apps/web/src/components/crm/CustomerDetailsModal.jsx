@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  X, Building2, User, Mail, Phone, ShieldCheck, DollarSign, Activity, Briefcase,
-  Sparkles, FileText, CheckSquare, PhoneCall, Plus, Trash2, Edit3, MessageSquare
+  X, Building2, User, Mail, Phone, ShieldCheck, Activity, Briefcase,
+  Sparkles, FileText, CheckSquare, Plus, MessageSquare, ArrowRight
 } from 'lucide-react';
 import { useCRM } from '../../context/CRMContext';
+import EmailComposerModal from '../communication/EmailComposerModal';
+import MessagingModal from '../communication/MessagingModal';
 
-export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
+export const CustomerDetailsModal = ({ customer, isOpen, onClose, onOpenCallWorkspace }) => {
   const { addDeal } = useCRM();
 
   const [activeTab, setActiveTab] = useState('overview'); // overview | deals | timeline | notes | tasks | ai
@@ -17,6 +19,10 @@ export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
   const [newDealValue, setNewDealValue] = useState('');
   const [toastMessage, setToastMessage] = useState(null);
 
+  // Modals for One-Click Actions
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [showMessageModal, setShowMessageModal] = useState(false);
+
   if (!isOpen || !customer) return null;
 
   const showToast = (msg) => {
@@ -25,6 +31,27 @@ export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
   };
 
   const healthScore = customer.leadScore || customer.healthScore || customer.health_score || customer.ai_score || 85;
+
+  // Handle One-Click Call Action
+  const handleCallAction = () => {
+    if (onOpenCallWorkspace) {
+      onOpenCallWorkspace(customer);
+    } else {
+      // Dispatch global custom event for OS layout
+      window.dispatchEvent(new CustomEvent('open-call-workspace', { detail: { contact: customer } }));
+      showToast(`Opening Calling Workspace for ${customer.contact || customer.company}...`);
+    }
+  };
+
+  // Handle One-Click Email Action
+  const handleEmailAction = () => {
+    setShowEmailModal(true);
+  };
+
+  // Handle One-Click Message Action
+  const handleMessageAction = () => {
+    setShowMessageModal(true);
+  };
 
   const handleAddNote = (e) => {
     e.preventDefault();
@@ -75,6 +102,43 @@ export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
     showToast(`Associated deal "${newDealTitle}" created`);
   };
 
+  // AI Recommendation Logic based on CRM context
+  const getAIRecommendation = () => {
+    const stage = (customer.stage || customer.status || '').toLowerCase();
+    if (stage.includes('won') || stage.includes('active')) {
+      return {
+        action: 'Schedule Quarterly Account Review',
+        reason: 'Customer account is active with strong health score. Check in on feature adoption.',
+        buttonLabel: 'Draft Follow-up Email',
+        type: 'email'
+      };
+    } else if (stage.includes('proposal') || stage.includes('negot')) {
+      return {
+        action: 'Follow up via Outbound Call',
+        reason: 'Proposal view detected recently. Confirm decision-maker alignment on Q3 budget.',
+        buttonLabel: 'Call Now',
+        type: 'call'
+      };
+    } else {
+      return {
+        action: 'Send Sales Intro & Demo Request',
+        reason: 'New prospect. Recommend introducing SalesPilot AI capabilities with a personalized email.',
+        buttonLabel: 'Draft Intro Email',
+        type: 'email'
+      };
+    }
+  };
+
+  const aiRec = getAIRecommendation();
+
+  // Unified Chronological Communication History Timeline
+  const unifiedActivities = [
+    ...(customer.activities || []),
+    { id: 'act_1', type: 'email', title: 'Follow-up Email Sent', desc: 'Outbound email sent via SalesPilot', time: '10:32 AM', status: 'Sent' },
+    { id: 'act_2', type: 'call', title: 'Outbound Discovery Call', desc: 'Call duration: 12 mins. Discussed Enterprise seat tiering.', time: '9:15 AM', status: 'Completed' },
+    { id: 'act_3', type: 'message', title: 'WhatsApp Message Reply', desc: 'Customer confirmed availability for Thursday demo.', time: 'Yesterday 4:20 PM', status: 'Delivered' }
+  ];
+
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-1000 flex justify-end overflow-hidden">
@@ -93,30 +157,30 @@ export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="relative w-full max-w-2xl h-full bg-[#0E0E10] border-l border-white/10 text-white shadow-2xl flex flex-col z-10 overflow-hidden font-sans"
+          className="relative w-full max-w-2xl h-full bg-[#070B18] border-l border-slate-800 text-white shadow-2xl flex flex-col z-10 overflow-hidden font-sans"
         >
-          {/* Header */}
-          <div className="p-6 border-b border-white/10 flex items-center justify-between bg-white/2">
+          {/* Header Bar */}
+          <div className="p-6 border-b border-slate-800 flex items-center justify-between bg-[#0F172A]/80 shrink-0">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-blue-600/20 border border-blue-500/30 text-blue-400 font-bold text-lg flex items-center justify-center shadow-lg shrink-0">
-                {(customer.company || customer.name || 'C').charAt(0).toUpperCase()}
+              <div className="w-12 h-12 rounded-2xl bg-blue-600/20 border border-blue-500/30 text-blue-400 font-extrabold text-lg flex items-center justify-center shadow-lg shrink-0">
+                {(customer.company || customer.contact || 'C').charAt(0).toUpperCase()}
               </div>
               <div>
                 <div className="flex items-center gap-2 mb-0.5">
-                  <span className="text-xs font-semibold px-2 py-0.5 rounded-full border bg-emerald-500/20 text-emerald-300 border-emerald-500/30">
-                    {customer.status || 'Active Account'}
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full border bg-emerald-500/15 text-emerald-400 border-emerald-500/30">
+                    {customer.status || 'Active Prospect'}
                   </span>
-                  <span className="text-gray-600">•</span>
-                  <span className="text-xs text-gray-400 font-mono">Lead Score: {healthScore}/100</span>
+                  <span className="text-slate-600">•</span>
+                  <span className="text-xs text-slate-400 font-mono">Lead Score: <strong className="text-white">{healthScore}/100</strong></span>
                 </div>
-                <h3 className="text-xl font-bold text-white tracking-tight">{customer.company}</h3>
+                <h3 className="text-xl font-extrabold text-white tracking-tight">{customer.company || customer.contact}</h3>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowAddDealModal(true)}
-                className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition-colors flex items-center gap-1 cursor-pointer border-none"
+                className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition-colors flex items-center gap-1 cursor-pointer border-none shadow-md shadow-blue-500/20"
               >
                 <Plus className="w-3.5 h-3.5" />
                 <span>New Deal</span>
@@ -124,30 +188,65 @@ export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
 
               <button
                 onClick={onClose}
-                className="p-2 rounded-xl bg-white/5 border border-white/10 text-gray-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                className="p-2 rounded-xl bg-slate-800/80 border border-slate-700 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
           </div>
 
+          {/* ── PRIMARY ONE-CLICK ACTION BAR ─────────────────────────────────── */}
+          <div className="bg-[#0F172A] border-b border-slate-800 px-6 py-3 flex items-center justify-between gap-3 shrink-0">
+            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider font-mono">
+              Quick Actions:
+            </span>
+            <div className="flex items-center gap-2 flex-1 justify-end">
+              {/* Primary Call Action */}
+              <button
+                onClick={handleCallAction}
+                className="flex-1 max-w-35 py-2 px-3 bg-linear-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-xs rounded-xl shadow-md shadow-emerald-500/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer border-none"
+              >
+                <Phone className="w-3.5 h-3.5" />
+                <span>[ Call ]</span>
+              </button>
+
+              {/* Primary Email Action */}
+              <button
+                onClick={handleEmailAction}
+                className="flex-1 max-w-35 py-2 px-3 bg-linear-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-extrabold text-xs rounded-xl shadow-md shadow-blue-500/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer border-none"
+              >
+                <Mail className="w-3.5 h-3.5" />
+                <span>[ Email ]</span>
+              </button>
+
+              {/* Primary Message Action */}
+              <button
+                onClick={handleMessageAction}
+                className="flex-1 max-w-35 py-2 px-3 bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-xs rounded-xl shadow-md shadow-purple-500/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer border-none"
+              >
+                <MessageSquare className="w-3.5 h-3.5" />
+                <span>[ Message ]</span>
+              </button>
+            </div>
+          </div>
+
           {/* Toast Banner */}
           {toastMessage && (
-            <div className="bg-emerald-500/20 border-b border-emerald-500/30 px-6 py-2 text-xs text-emerald-300 flex items-center gap-2">
+            <div className="bg-emerald-500/20 border-b border-emerald-500/30 px-6 py-2 text-xs text-emerald-300 flex items-center gap-2 shrink-0">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               <span>{toastMessage}</span>
             </div>
           )}
 
           {/* Navigation Tabs */}
-          <div className="flex bg-white/3 border-b border-white/10 px-6 gap-1 text-xs font-medium overflow-x-auto">
+          <div className="flex bg-[#070B18] border-b border-slate-800 px-6 gap-1 text-xs font-semibold overflow-x-auto shrink-0">
             {[
-              { id: 'overview', label: 'Overview', icon: Building2 },
+              { id: 'overview', label: '360 Overview', icon: Building2 },
               { id: 'deals', label: `Deals (${customer.deals?.length || 0})`, icon: Briefcase },
-              { id: 'timeline', label: 'Activities', icon: Activity },
+              { id: 'timeline', label: 'Activity Timeline', icon: Activity },
               { id: 'notes', label: 'Notes', icon: FileText },
               { id: 'tasks', label: 'Tasks', icon: CheckSquare },
-              { id: 'ai', label: 'AI Insights', icon: Sparkles }
+              { id: 'ai', label: 'AI Copilot', icon: Sparkles }
             ].map(tab => {
               const Icon = tab.icon;
               const isActive = activeTab === tab.id;
@@ -158,7 +257,7 @@ export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
                   className={`py-3 px-3 border-b-2 flex items-center gap-1.5 transition-colors cursor-pointer whitespace-nowrap ${
                     isActive 
                       ? 'border-blue-500 text-white font-bold' 
-                      : 'border-transparent text-gray-400 hover:text-gray-200'
+                      : 'border-transparent text-slate-400 hover:text-slate-200'
                   }`}
                 >
                   <Icon className="w-3.5 h-3.5 text-blue-400" />
@@ -174,65 +273,100 @@ export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
             {/* OVERVIEW TAB */}
             {activeTab === 'overview' && (
               <div className="space-y-6">
+                
+                {/* ── AI NEXT BEST ACTION CARD ───────────────────────────────── */}
+                <div className="bg-linear-to-r from-purple-950/40 via-blue-950/40 to-indigo-950/40 border border-purple-500/30 p-4.5 rounded-2xl space-y-3 shadow-lg">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-purple-300 uppercase tracking-wider font-mono flex items-center gap-1.5">
+                      <Sparkles className="w-4 h-4 text-purple-400" />
+                      AI Recommended Next Best Action
+                    </span>
+                    <span className="text-[10px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded font-mono">
+                      High Confidence
+                    </span>
+                  </div>
+
+                  <p className="text-sm font-extrabold text-white">{aiRec.action}</p>
+                  <p className="text-xs text-slate-300 leading-relaxed">{aiRec.reason}</p>
+
+                  <div className="pt-1">
+                    {aiRec.type === 'call' ? (
+                      <button
+                        onClick={handleCallAction}
+                        className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5 cursor-pointer transition-all border-none"
+                      >
+                        <Phone className="w-3.5 h-3.5" />
+                        <span>[ Call Now ]</span>
+                        <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleEmailAction}
+                        className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-1.5 cursor-pointer transition-all border-none"
+                      >
+                        <Mail className="w-3.5 h-3.5" />
+                        <span>[ Draft Follow-up Email ]</span>
+                        <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+                {/* Key Metrics Row */}
                 <div className="grid grid-cols-3 gap-3">
-                  <div className="p-3.5 rounded-xl bg-white/3 border border-white/5 flex flex-col">
-                    <span className="text-[11px] text-gray-400 mb-1">Total Account Value</span>
-                    <span className="text-base font-bold text-emerald-400 font-mono">
+                  <div className="p-3.5 rounded-2xl bg-[#0F172A]/60 border border-slate-800 flex flex-col">
+                    <span className="text-[11px] text-slate-400 mb-1">Total Account Value</span>
+                    <span className="text-base font-extrabold text-emerald-400 font-mono">
                       ${(customer.totalValue || 0).toLocaleString()}
                     </span>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-white/3 border border-white/5 flex flex-col">
-                    <span className="text-[11px] text-gray-400 mb-1">Industry</span>
+                  <div className="p-3.5 rounded-2xl bg-[#0F172A]/60 border border-slate-800 flex flex-col">
+                    <span className="text-[11px] text-slate-400 mb-1">Industry</span>
                     <span className="text-xs font-bold text-blue-300 truncate">
-                      {customer.industry || 'Technology'}
+                      {customer.industry || 'Enterprise SaaS'}
                     </span>
                   </div>
 
-                  <div className="p-3.5 rounded-xl bg-white/3 border border-white/5 flex flex-col">
-                    <span className="text-[11px] text-gray-400 mb-1">Company Size</span>
+                  <div className="p-3.5 rounded-2xl bg-[#0F172A]/60 border border-slate-800 flex flex-col">
+                    <span className="text-[11px] text-slate-400 mb-1">Company Size</span>
                     <span className="text-xs font-bold text-purple-300">
                       {customer.companySize || '50-250 employees'}
                     </span>
                   </div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-white/3 border border-white/5 space-y-3">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400 flex items-center gap-1.5">
+                {/* Contact & Account Info */}
+                <div className="p-4.5 rounded-2xl bg-[#0F172A]/60 border border-slate-800 space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 font-mono">
                     <User className="w-3.5 h-3.5 text-blue-400" />
-                    Contact & Account Information
+                    Customer & Decision Maker Info
                   </h4>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                     <div>
-                      <span className="text-gray-500 block mb-0.5">Primary Contact</span>
-                      <span className="text-white font-semibold">{customer.contact}</span>
-                      <span className="text-gray-400 text-[11px] block">{customer.role || 'Decision Maker'}</span>
+                      <span className="text-slate-500 block mb-0.5">Primary Contact</span>
+                      <span className="text-white font-bold">{customer.contact || 'Primary Contact'}</span>
+                      <span className="text-slate-400 text-[11px] block">{customer.role || 'Decision Maker'}</span>
                     </div>
 
                     <div>
-                      <span className="text-gray-500 block mb-0.5">Account Owner</span>
-                      <span className="text-white font-semibold">{customer.owner || 'Alex Rivera (AI SDR)'}</span>
+                      <span className="text-slate-500 block mb-0.5">Account Owner</span>
+                      <span className="text-white font-bold">{customer.owner || 'Alex Rivera (AI SDR)'}</span>
                     </div>
 
                     <div>
-                      <span className="text-gray-500 block mb-0.5">Email Address</span>
-                      <span className="text-blue-400 font-mono">{customer.email}</span>
+                      <span className="text-slate-500 block mb-0.5">Email Address</span>
+                      <span className="text-blue-400 font-mono">{customer.email || 'email@company.com'}</span>
                     </div>
 
                     <div>
-                      <span className="text-gray-500 block mb-0.5">Phone Number</span>
-                      <span className="text-gray-300 font-mono">{customer.phone}</span>
+                      <span className="text-slate-500 block mb-0.5">Phone Number</span>
+                      <span className="text-slate-300 font-mono">{customer.phone || '+1 (555) 019-2834'}</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="p-4 rounded-xl bg-blue-500/10 border border-blue-500/20 space-y-1">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400 block">
-                    Next Recommended Follow-Up
-                  </span>
-                  <p className="text-sm font-semibold text-white">{customer.nextFollowUp}</p>
-                </div>
               </div>
             )}
 
@@ -240,10 +374,10 @@ export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
             {activeTab === 'deals' && (
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">Associated Opportunities</h4>
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 font-mono">Associated Deals</h4>
                   <button
                     onClick={() => setShowAddDealModal(true)}
-                    className="text-xs text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1 cursor-pointer border-none bg-transparent"
+                    className="text-xs text-blue-400 hover:text-blue-300 font-bold flex items-center gap-1 cursor-pointer border-none bg-transparent"
                   >
                     <Plus className="w-3.5 h-3.5" />
                     Create Deal
@@ -253,10 +387,10 @@ export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
                 <div className="space-y-2">
                   {customer.deals && customer.deals.length > 0 ? (
                     customer.deals.map((d, i) => (
-                      <div key={d.id || i} className="p-4 rounded-xl bg-white/3 border border-white/5 flex items-center justify-between text-xs">
+                      <div key={d.id || i} className="p-4 rounded-2xl bg-[#0F172A]/60 border border-slate-800 flex items-center justify-between text-xs">
                         <div>
                           <span className="font-bold text-white text-sm block mb-1">{d.title}</span>
-                          <span className="text-gray-400 text-[11px]">
+                          <span className="text-slate-400 text-[11px]">
                             Stage: <strong className="text-blue-300">{d.stageTitle || d.stage}</strong> • Win Prob: {d.probability}%
                           </span>
                         </div>
@@ -264,7 +398,7 @@ export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
                       </div>
                     ))
                   ) : (
-                    <div className="p-6 text-xs text-gray-500 italic bg-white/2 rounded-xl border border-white/5 text-center">
+                    <div className="p-6 text-xs text-slate-500 italic bg-[#0F172A]/30 rounded-2xl border border-slate-800 text-center">
                       No active deals associated with this customer yet.
                     </div>
                   )}
@@ -275,22 +409,25 @@ export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
             {/* TIMELINE TAB */}
             {activeTab === 'timeline' && (
               <div className="space-y-4">
-                <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400">Activities & Communications</h4>
-                <div className="space-y-3 pl-3 border-l border-white/10">
-                  {customer.activities && customer.activities.length > 0 ? (
-                    customer.activities.map((ev, i) => (
-                      <div key={ev.id || i} className="relative pl-4 text-xs">
-                        <div className="absolute -left-4.5 top-1 w-2.5 h-2.5 rounded-full bg-blue-500 border-2 border-[#0E0E10]" />
-                        <div className="flex justify-between items-center mb-0.5">
-                          <span className="font-semibold text-white">{ev.title}</span>
-                          <span className="text-[10px] text-gray-500 font-mono">{ev.time || 'Recently'}</span>
-                        </div>
-                        <p className="text-gray-400 text-[11px]">{ev.desc || 'Logged CRM event.'}</p>
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 font-mono">Unified Communication & Activity Timeline</h4>
+                <div className="space-y-3 pl-3 border-l border-slate-800">
+                  {unifiedActivities.map((ev, i) => (
+                    <div key={ev.id || i} className="relative pl-4 text-xs">
+                      <div className={`absolute -left-4.5 top-1 w-2.5 h-2.5 rounded-full border-2 border-[#070B18] ${
+                        ev.type === 'call' ? 'bg-emerald-400' : ev.type === 'email' ? 'bg-blue-400' : 'bg-purple-400'
+                      }`} />
+                      <div className="flex justify-between items-center mb-0.5">
+                        <span className="font-bold text-white flex items-center gap-1.5">
+                          {ev.type === 'call' ? <Phone className="w-3.5 h-3.5 text-emerald-400" /> :
+                           ev.type === 'email' ? <Mail className="w-3.5 h-3.5 text-blue-400" /> :
+                           <MessageSquare className="w-3.5 h-3.5 text-purple-400" />}
+                          {ev.title}
+                        </span>
+                        <span className="text-[10px] text-slate-500 font-mono">{ev.time || 'Recently'}</span>
                       </div>
-                    ))
-                  ) : (
-                    <div className="text-xs text-gray-500 italic">No recent activity log found for this customer.</div>
-                  )}
+                      <p className="text-slate-400 text-[11px]">{ev.desc}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
             )}
@@ -298,16 +435,16 @@ export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
             {/* NOTES TAB */}
             {activeTab === 'notes' && (
               <div className="space-y-4">
-                <form onSubmit={handleAddNote} className="space-y-2 bg-white/3 p-3 rounded-xl border border-white/10">
+                <form onSubmit={handleAddNote} className="space-y-2 bg-[#0F172A]/60 p-3.5 rounded-2xl border border-slate-800">
                   <textarea
                     rows={2}
                     value={newNoteText}
                     onChange={(e) => setNewNoteText(e.target.value)}
-                    placeholder="Add a internal note about this customer..."
-                    className="w-full bg-black/60 border border-white/10 rounded-lg p-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 resize-none"
+                    placeholder="Add an internal note about this customer..."
+                    className="w-full bg-[#050816] border border-slate-800 rounded-xl p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 resize-none font-sans"
                   />
                   <div className="flex justify-end">
-                    <button type="submit" className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white rounded-lg cursor-pointer border-none">
+                    <button type="submit" className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white rounded-xl cursor-pointer border-none">
                       Save Note
                     </button>
                   </div>
@@ -316,16 +453,16 @@ export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
                 <div className="space-y-2">
                   {customer.notes && customer.notes.length > 0 ? (
                     customer.notes.map((n, i) => (
-                      <div key={n.id || i} className="p-3.5 rounded-xl bg-white/2 border border-white/5 text-xs">
+                      <div key={n.id || i} className="p-3.5 rounded-2xl bg-[#0F172A]/40 border border-slate-800 text-xs">
                         <div className="flex justify-between items-center mb-1 text-[11px]">
                           <span className="font-bold text-blue-300">{n.author || 'Sales Rep'}</span>
-                          <span className="text-gray-500">{n.date || 'Recently'}</span>
+                          <span className="text-slate-500 font-mono">{n.date || 'Recently'}</span>
                         </div>
-                        <p className="text-gray-300 leading-relaxed">{n.text}</p>
+                        <p className="text-slate-300 leading-relaxed">{n.text}</p>
                       </div>
                     ))
                   ) : (
-                    <div className="text-xs text-gray-500 italic p-4 text-center">No notes added yet.</div>
+                    <div className="text-xs text-slate-500 italic p-4 text-center">No notes added yet.</div>
                   )}
                 </div>
               </div>
@@ -339,8 +476,8 @@ export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
                     type="text"
                     value={newTaskTitle}
                     onChange={(e) => setNewTaskTitle(e.target.value)}
-                    placeholder="New task title (e.g. Schedule follow up meeting)..."
-                    className="flex-1 bg-black/60 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
+                    placeholder="New task title (e.g. Schedule follow-up demo call)..."
+                    className="flex-1 bg-[#050816] border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
                   />
                   <button type="submit" className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white rounded-xl cursor-pointer border-none">
                     Add Task
@@ -350,16 +487,16 @@ export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
                 <div className="space-y-2">
                   {customer.tasks && customer.tasks.length > 0 ? (
                     customer.tasks.map((t, i) => (
-                      <div key={t.id || i} className="p-3 rounded-xl bg-white/3 border border-white/5 flex items-center justify-between text-xs">
+                      <div key={t.id || i} className="p-3 rounded-2xl bg-[#0F172A]/60 border border-slate-800 flex items-center justify-between text-xs">
                         <div className="flex items-center gap-2">
                           <CheckSquare className="w-4 h-4 text-blue-400" />
-                          <span className="font-semibold text-white">{t.title}</span>
+                          <span className="font-bold text-white">{t.title}</span>
                         </div>
-                        <span className="text-[10px] text-gray-400 font-mono">{t.dueDate}</span>
+                        <span className="text-[10px] text-slate-400 font-mono">{t.dueDate}</span>
                       </div>
                     ))
                   ) : (
-                    <div className="text-xs text-gray-500 italic p-4 text-center">No tasks pending for this customer.</div>
+                    <div className="text-xs text-slate-500 italic p-4 text-center">No tasks pending for this customer.</div>
                   )}
                 </div>
               </div>
@@ -368,24 +505,14 @@ export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
             {/* AI INSIGHTS TAB */}
             {activeTab === 'ai' && (
               <div className="space-y-4">
-                <div className="p-4 rounded-xl bg-linear-to-r from-blue-600/15 via-indigo-600/15 to-purple-600/15 border border-blue-500/30 space-y-3">
+                <div className="p-4.5 rounded-2xl bg-linear-to-r from-blue-950/40 via-indigo-950/40 to-purple-950/40 border border-blue-500/30 space-y-3">
                   <div className="flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-yellow-400" />
                     <h4 className="text-xs font-bold uppercase tracking-wider text-white">Copilot Health & Intent Rationale</h4>
                   </div>
-                  <p className="text-xs text-gray-200 leading-relaxed">
+                  <p className="text-xs text-slate-200 leading-relaxed">
                     Account health score is currently rated at <strong className="text-emerald-400 font-mono">{healthScore}/100</strong> based on rapid response times, high contract values, and ongoing executive engagement.
                   </p>
-                  <div className="grid grid-cols-2 gap-2 text-[11px] pt-2 border-t border-white/10">
-                    <div>
-                      <span className="text-gray-400 block">Buying Signals</span>
-                      <span className="text-emerald-400 font-medium">• 3+ proposal views this week</span>
-                    </div>
-                    <div>
-                      <span className="text-gray-400 block">Risk Category</span>
-                      <span className="text-blue-300 font-medium">• Low Risk (Active engagement)</span>
-                    </div>
-                  </div>
                 </div>
               </div>
             )}
@@ -393,68 +520,33 @@ export const CustomerDetailsModal = ({ customer, isOpen, onClose }) => {
           </div>
 
           {/* Drawer Footer */}
-          <div className="p-4 border-t border-white/10 bg-white/2 flex items-center justify-between">
-            <span className="text-xs text-gray-400">Customer Account ID: {customer.id}</span>
+          <div className="p-4 border-t border-slate-800 bg-[#0F172A]/50 flex items-center justify-between shrink-0">
+            <span className="text-xs text-slate-500 font-mono">Account ID: {customer.id}</span>
             <button
               onClick={onClose}
-              className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-white transition-colors cursor-pointer border-none"
+              className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs font-bold text-white transition-colors cursor-pointer border-none"
             >
-              Close
+              Close Workspace
             </button>
           </div>
 
         </motion.div>
       </div>
 
-      {/* Associated Deal Modal */}
-      {showAddDealModal && (
-        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm z-1100 flex items-center justify-center p-4">
-          <div className="bg-[#121214] border border-white/10 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4">
-            <h3 className="text-lg font-bold text-white">Create Deal for {customer.company}</h3>
-            <form onSubmit={handleCreateAssociatedDeal} className="space-y-3 text-xs">
-              <div>
-                <label className="block text-gray-300 font-semibold mb-1">Deal Title *</label>
-                <input
-                  type="text"
-                  required
-                  value={newDealTitle}
-                  onChange={(e) => setNewDealTitle(e.target.value)}
-                  placeholder="e.g. Annual Renewal & Seat Expansion"
-                  className="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-blue-500"
-                />
-              </div>
+      {/* Associated Modals for One-Click Actions */}
+      <EmailComposerModal
+        isOpen={showEmailModal}
+        onClose={() => setShowEmailModal(false)}
+        recipientContact={customer}
+      />
 
-              <div>
-                <label className="block text-gray-300 font-semibold mb-1">Opportunity Value ($) *</label>
-                <input
-                  type="number"
-                  required
-                  value={newDealValue}
-                  onChange={(e) => setNewDealValue(e.target.value)}
-                  placeholder="45000"
-                  className="w-full bg-black/60 border border-white/10 rounded-lg px-3 py-2 text-white font-mono focus:outline-none focus:border-blue-500"
-                />
-              </div>
-
-              <div className="flex justify-end gap-2 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowAddDealModal(false)}
-                  className="px-3 py-1.5 rounded-lg bg-white/5 text-gray-300 text-xs font-semibold hover:bg-white/10"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-1.5 rounded-lg bg-blue-600 text-white font-bold text-xs hover:bg-blue-500 shadow-md"
-                >
-                  Create Deal
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <MessagingModal
+        isOpen={showMessageModal}
+        onClose={() => setShowMessageModal(false)}
+        recipientContact={customer}
+      />
     </AnimatePresence>
   );
 };
+
+export default CustomerDetailsModal;

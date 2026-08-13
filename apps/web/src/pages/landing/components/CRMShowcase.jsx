@@ -202,7 +202,7 @@ export const CRMShowcase = () => {
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-semibold">{col.title}</span>
                     <span
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${col.config.badge}`}
+                      className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${col.config?.badge || 'bg-blue-500/20 text-blue-300 border-blue-500/30'}`}
                     >
                       {colDeals.length}
                     </span>
@@ -221,7 +221,7 @@ export const CRMShowcase = () => {
                         onClick={() => setSelectedDeal(deal)}
                         whileHover={{ y: -3, scale: 1.01 }}
                         transition={{ duration: 0.2 }}
-                        className={`p-4 rounded-xl bg-white/4 border ${col.config.border} hover:bg-white/8 hover:border-blue-500/50 transition-all shadow-lg flex flex-col justify-between gap-3 group relative overflow-hidden cursor-pointer`}
+                        className={`p-4 rounded-xl bg-white/4 border ${col.config?.border || 'border-white/10'} hover:bg-white/8 hover:border-blue-500/50 transition-all shadow-lg flex flex-col justify-between gap-3 group relative overflow-hidden cursor-pointer`}
                       >
                         {/* Top Row: Company & Value */}
                         <div className="flex justify-between items-start gap-2">

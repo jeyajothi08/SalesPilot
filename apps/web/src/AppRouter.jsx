@@ -39,7 +39,7 @@ const ProtectedRoute = ({ children }) => {
 
   if (!isAuthenticated()) {
     // Preserve the intended destination for post-login redirect
-    return <Navigate to="/" state={{ from: location }} replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return children;
@@ -81,6 +81,17 @@ export const AppRouter = () => {
           {/* Protected App Route */}
           <Route
             path="/app/*"
+            element={
+              <ProtectedRoute>
+                <CRMProvider>
+                  <ResponsiveOS />
+                </CRMProvider>
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/dashboard/*"
             element={
               <ProtectedRoute>
                 <CRMProvider>
