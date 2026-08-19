@@ -8,7 +8,9 @@ import { Badge } from '../design-system/atoms/Badge';
 import { useCRM } from '../context/CRMContext';
 
 export const CopilotApp = ({ id, isActive, onFocus, onClose }) => {
-  const { deals, computeAnalytics } = useCRM();
+  const crmContext = useCRM();
+  const deals = Array.isArray(crmContext?.deals) ? crmContext.deals : [];
+  const computeAnalytics = crmContext?.computeAnalytics || (() => ({ totalDeals: 0, totalValue: 0, weightedPipeline: 0 }));
   const [aiState, setAiState] = useState('idle'); // idle, listening, thinking, speaking
   const [messages, setMessages] = useState([]);
 

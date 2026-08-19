@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Settings, Users, Shield, Activity, Building, Lock } from 'lucide-react';
+import { Settings, Users, Shield, Activity, Building, Lock, Zap } from 'lucide-react';
 import { Window } from './Window';
 
 import OrganizationSettings from '../pages/settings/OrganizationSettings';
@@ -7,12 +7,14 @@ import TeamManagement from '../pages/settings/TeamManagement';
 import RoleManagement from '../pages/settings/RoleManagement';
 import AuditLogViewer from '../pages/settings/AuditLogViewer';
 import SecuritySettings from '../pages/settings/SecuritySettings';
+import IntegrationsSettings from '../pages/settings/IntegrationsSettings';
 
 export const SettingsApp = ({ id, isActive, onFocus, onClose }) => {
   const [activeTab, setActiveTab] = useState('organization');
 
   const tabs = [
     { id: 'organization', label: 'Organization', icon: Building },
+    { id: 'integrations', label: 'Integrations & Telephony', icon: Zap },
     { id: 'team', label: 'Team', icon: Users },
     { id: 'roles', label: 'Roles & Permissions', icon: Shield },
     { id: 'audit', label: 'Audit Logs', icon: Activity },
@@ -59,6 +61,7 @@ export const SettingsApp = ({ id, isActive, onFocus, onClose }) => {
         {/* Content Area */}
         <div className="flex-1 overflow-y-auto p-6 bg-[#050816] custom-scrollbar">
            {activeTab === 'organization' && <OrganizationSettings />}
+           {activeTab === 'integrations' && <IntegrationsSettings />}
            {activeTab === 'team' && <TeamManagement />}
            {activeTab === 'roles' && <RoleManagement />}
            {activeTab === 'audit' && <AuditLogViewer />}

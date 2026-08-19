@@ -4,7 +4,9 @@ import { useCRM } from '../../context/CRMContext';
 import { Search, Filter, Plus, ArrowUpDown, DollarSign, TrendingUp, Layers, CheckCircle2, ShieldAlert } from 'lucide-react';
 
 export default function PipelinePage() {
-  const { deals, addDeal } = useCRM();
+  const crmContext = useCRM();
+  const deals = useMemo(() => Array.isArray(crmContext?.deals) ? crmContext.deals : [], [crmContext?.deals]);
+  const addDeal = crmContext?.addDeal || (() => {});
   
   const [searchTerm, setSearchTerm] = useState('');
   const [stageFilter, setStageFilter] = useState('all');
@@ -54,6 +56,7 @@ export default function PipelinePage() {
   // Filter and Sort Deals
   const processedDeals = useMemo(() => {
     return deals.filter(deal => {
+      if (!deal) return false;
       // Search Filter
       const query = searchTerm.toLowerCase();
       const matchesSearch = !searchTerm || 
@@ -66,16 +69,16 @@ export default function PipelinePage() {
 
       return matchesSearch && matchesStage;
     }).sort((a, b) => {
-      const valA = Number(a.value) || 0;
-      const valB = Number(b.value) || 0;
-      const probA = Number(a.probability) || 0;
-      const probB = Number(b.probability) || 0;
+      const valA = Number(a?.value) || 0;
+      const valB = Number(b?.value) || 0;
+      const probA = Number(a?.probability) || 0;
+      const probB = Number(b?.probability) || 0;
 
       if (sortBy === 'value-desc') return valB - valA;
       if (sortBy === 'value-asc') return valA - valB;
       if (sortBy === 'prob-desc') return probB - probA;
       if (sortBy === 'prob-asc') return probA - probB;
-      if (sortBy === 'title') return (a.title || '').localeCompare(b.title || '');
+      if (sortBy === 'title') return (a?.title || '').localeCompare(b?.title || '');
       return 0;
     });
   }, [deals, searchTerm, stageFilter, sortBy]);

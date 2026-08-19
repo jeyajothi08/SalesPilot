@@ -9,7 +9,8 @@ import MessagingModal from '../components/communication/MessagingModal';
 export const CommandPalette = ({ onOpenApp }) => {
   const [open, setOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const { deals } = useCRM();
+  const crmContext = useCRM();
+  const deals = useMemo(() => Array.isArray(crmContext?.deals) ? crmContext.deals : [], [crmContext?.deals]);
 
   // Selected contact for email/message modal
   const [emailContact, setEmailContact] = useState(null);

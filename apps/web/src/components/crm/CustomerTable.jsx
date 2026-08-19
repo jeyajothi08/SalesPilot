@@ -5,7 +5,9 @@ import { CustomerDetailsModal } from './CustomerDetailsModal';
 import { Search, Filter, Building2, User, Mail, Phone, Calendar, ArrowUpDown, ChevronRight } from 'lucide-react';
 
 export default function CustomerTable() {
-  const { deals, loading } = useCRM();
+  const crmContext = useCRM();
+  const deals = Array.isArray(crmContext?.deals) ? crmContext.deals : [];
+  const loading = !!crmContext?.loading;
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');

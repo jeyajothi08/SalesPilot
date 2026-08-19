@@ -83,6 +83,6 @@ class NotificationResponse(BaseModel):
     user_id: uuid.UUID
     title: str
     message: str
-    is_read: str
+    is_read: bool
     created_at: datetime
     model_config = ConfigDict(from_attributes=True)

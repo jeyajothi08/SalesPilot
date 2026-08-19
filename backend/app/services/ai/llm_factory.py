@@ -56,9 +56,17 @@ class LLMFactory:
         prompt: str, history: list, context: str = "", provider: str = "openai", model_name: str = "gpt-4o-mini"
     ) -> Dict[str, Any]:
         """
-        Legacy mock wrapper adapted for simple text invocation.
-        Use `sales_agent.py` for full agentic tool-calling.
+        Legacy wrapper with graceful dev/test mode fallback when API keys are unconfigured.
         """
+        from app.core.config import settings
+        if not settings.OPENAI_API_KEY or settings.OPENAI_API_KEY.startswith("sk-placeholder"):
+            return {
+                "role": "assistant",
+                "content": "Subject: SalesPilot Follow-up\n\nHi there,\n\nThank you for exploring SalesPilot AI. We would love to discuss how our AI sales employee can accelerate your pipeline.\n\nBest regards,\nSales Team",
+                "tool_calls": [],
+                "tokens_used": 0,
+            }
+
         from langchain_core.messages import HumanMessage, SystemMessage
         
         llm = LLMFactory.get_llm(provider, model_name)

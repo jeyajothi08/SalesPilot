@@ -1,4 +1,4 @@
-﻿import pytest
+import pytest
 import uuid
 from httpx import AsyncClient
 
@@ -52,8 +52,11 @@ async def test_send_whatsapp_not_found(authorized_client: AsyncClient):
 
 @pytest.mark.asyncio
 async def test_create_notification(authorized_client: AsyncClient):
+    prof_resp = await authorized_client.get("/api/v1/auth/profile")
+    user_id = prof_resp.json()["id"] if prof_resp.status_code == 200 else str(uuid.uuid4())
+    
     response = await authorized_client.post("/api/v1/communication/notifications", json={
-        "user_id": str(uuid.uuid4()),
+        "user_id": user_id,
         "title": "New Lead",
         "message": "You have a new lead waiting."
     })

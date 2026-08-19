@@ -59,7 +59,8 @@ class Settings(BaseSettings):
     SENDGRID_FROM_EMAIL: str = "noreply@salespilot.ai"
     SENDGRID_FROM_NAME: str = "SalesPilot AI"
 
-    # Telephony (Twilio)
+    # Telephony
+    TELEPHONY_PROVIDER: str = "demo"
     TWILIO_ACCOUNT_SID: str = ""
     TWILIO_AUTH_TOKEN: str = ""
     TWILIO_PHONE_NUMBER: str = ""

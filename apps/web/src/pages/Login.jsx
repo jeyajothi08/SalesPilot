@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bot, ArrowRight, Mail, Lock, AlertCircle } from 'lucide-react';
+import { Bot, ArrowRight, Mail, Lock, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { authAPI } from '../api/auth';
 import { setTokens } from '../api/apiClient';
@@ -20,6 +20,7 @@ const formatErrorMessage = (errorData) => {
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
@@ -49,6 +50,10 @@ const Login = () => {
       navigate(destination, { replace: true });
     } catch (err) {
       console.error('[Login] Login request failed:', err);
+      if (!err.response && (err.code === 'ERR_NETWORK' || err.message === 'Network Error')) {
+        setError('Unable to connect to the SalesPilot server. Please ensure the backend server is running and try again.');
+        return;
+      }
       const detail = err.response?.data?.detail || err.response?.data || err.message;
       const formatted = formatErrorMessage(detail);
       setError(formatted);
@@ -131,14 +136,22 @@ const Login = () => {
                 <input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-11 pr-4 h-13 bg-[#0F172A] border border-[#263247] hover:border-slate-600 focus:border-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6]/20 rounded-xl text-[#F8FAFC] placeholder-[#64748B] text-sm focus:outline-none transition-all shadow-inner"
+                  className="block w-full pl-11 pr-11 h-13 bg-[#0F172A] border border-[#263247] hover:border-slate-600 focus:border-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6]/20 rounded-xl text-[#F8FAFC] placeholder-[#64748B] text-sm focus:outline-none transition-all shadow-inner"
                   placeholder="••••••••"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#94A3B8] hover:text-[#F8FAFC] transition-colors cursor-pointer"
+                >
+                  {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                </button>
               </div>
             </div>
 

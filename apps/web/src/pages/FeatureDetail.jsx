@@ -142,6 +142,18 @@ const FeatureDetail = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
+            {featureId === 'voice-calling' && (
+              isAuth ? (
+                <Link to="/app/calling" className="px-8 py-4 bg-linear-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-full text-center font-bold transition-all shadow-lg shadow-emerald-500/25">
+                  Open Calling Workspace
+                </Link>
+              ) : (
+                <Link to="/login" state={{ from: { pathname: '/app/calling' } }} className="px-8 py-4 bg-linear-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-full text-center font-bold transition-all shadow-lg shadow-emerald-500/25">
+                  Open Calling Workspace
+                </Link>
+              )
+            )}
+
             {isAuth ? (
               <Link to="/app" className="px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white rounded-full text-center font-medium transition-colors">Launch OS Dashboard</Link>
             ) : (

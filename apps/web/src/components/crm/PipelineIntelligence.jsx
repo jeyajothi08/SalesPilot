@@ -4,7 +4,8 @@ import { useCRM } from '../../context/CRMContext';
 import { ShieldAlert, TrendingUp, Calendar, AlertTriangle, CheckCircle2, DollarSign, Sparkles, ArrowUpRight } from 'lucide-react';
 
 export default function PipelineIntelligence() {
-  const { deals } = useCRM();
+  const crmContext = useCRM();
+  const deals = Array.isArray(crmContext?.deals) ? crmContext.deals : [];
   const [timeframe, setTimeframe] = useState('month'); // month | next_month | quarter
 
   // Calculate AI Risk Metrics per deal based on live deal fields

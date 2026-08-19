@@ -24,6 +24,11 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         client_ip = request.client.host if request.client else "unknown"
         path = request.url.path
 
+        # Bypass rate limiter during automated testing
+        from app.core.config import settings
+        if settings.ENVIRONMENT == "testing":
+            return await call_next(request)
+
         # Determine rate limit tier
         if "/auth/login" in path or "/auth/register" in path:
             max_requests, window = 20, 60

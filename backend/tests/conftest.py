@@ -1,16 +1,22 @@
-﻿import pytest
+import pytest
 import pytest_asyncio
 import uuid
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
-from app.main import app
-from app.database.session import get_db
-from app.database.base import Base
-from app.core.security import create_access_token
-import app.models as app_models  # ensure models are loaded
-from app.models.user import User
+import app.models.user
+import app.models.iam
+import app.models.crm
+import app.models.communication
+import app.models.analytics
+import app.models.ai
+import app.models.voice
+import app.models.billing
+import app.models.audit
+from app.models.user import Base, User
 from app.models.iam import Role, OrganizationUser, Organization
-import uuid
+from app.core.security import create_access_token
+from app.main import app as fastapi_app
+from app.database.session import get_db
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///./test_app.db"
 
@@ -27,7 +33,7 @@ async def override_get_db():
     async with TestingSessionLocal() as session:
         yield session
 
-app.dependency_overrides[get_db] = override_get_db
+fastapi_app.dependency_overrides[get_db] = override_get_db
 
 @pytest_asyncio.fixture(scope="session", autouse=True)
 async def create_test_db():
@@ -45,7 +51,7 @@ async def db_session():
 
 @pytest_asyncio.fixture(scope="function")
 async def client():
-    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+    async with AsyncClient(transport=ASGITransport(app=fastapi_app), base_url="http://test") as ac:
         yield ac
 
 @pytest_asyncio.fixture(scope="function")
@@ -111,7 +117,8 @@ async def authorized_client(client, db_session):
         org_user = OrganizationUser(
             org_id=org_id,
             user_id=user_id,
-            role_id=role_id
+            role_id=role_id,
+            status="active"
         )
         db_session.add(org_user)
         await db_session.commit()

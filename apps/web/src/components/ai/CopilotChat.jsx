@@ -177,8 +177,14 @@ const formatMessageText = (content) => {
   });
 };
 
-export const CopilotChat = ({ onClose }) => {
-  const { deals, updateDealStage, updateDealValue, deleteDeal, addDeal } = useCRM();
+export const CopilotChat = ({ onClose, inline = false }) => {
+  const crmContext = useCRM();
+  const deals = Array.isArray(crmContext?.deals) ? crmContext.deals : [];
+  const updateDealStage = crmContext?.updateDealStage || (() => {});
+  const updateDealValue = crmContext?.updateDealValue || (() => {});
+  const deleteDeal = crmContext?.deleteDeal || (() => {});
+
+  const [pendingAction, setPendingAction] = useState(null);
   const [messages, setMessages] = useState([
     { 
       role: 'assistant', 
@@ -189,6 +195,44 @@ export const CopilotChat = ({ onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const messagesEndRef = useRef(null);
+
+  const confirmPendingAction = async () => {
+    if (!pendingAction) return;
+    setIsLoading(true);
+    const { type, deal, targetStage, targetStageTitle, newVal } = pendingAction;
+    try {
+      if (type === 'stage') {
+        await updateDealStage(deal.id, targetStage);
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: `Action Confirmed & Executed: Successfully moved **${deal.title}** (${deal.company}) to stage **${targetStageTitle}**.`
+        }]);
+      } else if (type === 'value') {
+        updateDealValue(deal.id, newVal);
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: `Action Confirmed & Executed: Successfully updated value of **${deal.title}** to **$${newVal.toLocaleString()}**.`
+        }]);
+      } else if (type === 'delete') {
+        deleteDeal(deal.id);
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: `Action Confirmed & Executed: Successfully deleted deal **${deal.title}**.`
+        }]);
+      }
+    } finally {
+      setPendingAction(null);
+      setIsLoading(false);
+    }
+  };
+
+  const cancelPendingAction = () => {
+    setPendingAction(null);
+    setMessages(prev => [...prev, {
+      role: 'assistant',
+      content: 'Action cancelled. No changes were made to your CRM pipeline.'
+    }]);
+  };
 
   const quickPrompts = [
     "Analyze my pipeline",
@@ -217,9 +261,7 @@ export const CopilotChat = ({ onClose }) => {
 
     const msgLower = userMessage.toLowerCase();
 
-    // ── PHASE 6 & 8: ACTION MUTATION COMMANDS ─────────────────────────────
-    
-    // 1. Stage update command
+    // ── ACTION MUTATION COMMANDS (with Confirmation Guard) ───────────────
     if (msgLower.includes("move ") || msgLower.includes("change stage") || msgLower.includes("update stage") || msgLower.includes("set stage")) {
       const matchedDeal = deals.find(d => 
         msgLower.includes(d.title.toLowerCase()) || 
@@ -251,17 +293,21 @@ export const CopilotChat = ({ onClose }) => {
       }
 
       if (matchedDeal && targetStage) {
-        await updateDealStage(matchedDeal.id, targetStage);
+        setPendingAction({
+          type: 'stage',
+          deal: matchedDeal,
+          targetStage,
+          targetStageTitle
+        });
         setMessages(prev => [...prev, {
           role: 'assistant',
-          content: `Successfully moved **${matchedDeal.title}** (${matchedDeal.company}) to stage **${targetStageTitle}**. Your live CRM pipeline state and analytics have been updated.`
+          content: `I can move **${matchedDeal.title}** (${matchedDeal.company}) to stage **${targetStageTitle}**. Would you like to confirm this pipeline update?`
         }]);
         setIsLoading(false);
         return;
       }
     }
 
-    // 2. Value update command (e.g. "Change Acme deal value to $100,000")
     if (msgLower.includes("value to") || msgLower.includes("change value") || msgLower.includes("update value")) {
       const matchedDeal = deals.find(d => 
         msgLower.includes(d.title.toLowerCase()) || 
@@ -273,10 +319,14 @@ export const CopilotChat = ({ onClose }) => {
       if (matchedDeal && valMatch) {
         const newVal = parseFloat(valMatch[1].replace(/,/g, ''));
         if (!isNaN(newVal)) {
-          updateDealValue(matchedDeal.id, newVal);
+          setPendingAction({
+            type: 'value',
+            deal: matchedDeal,
+            newVal
+          });
           setMessages(prev => [...prev, {
             role: 'assistant',
-            content: `Successfully updated value of **${matchedDeal.title}** to **$${newVal.toLocaleString()}**. Your pipeline totals and weighted revenue have been recalculated.`
+            content: `I can update the value of **${matchedDeal.title}** to **$${newVal.toLocaleString()}**. Would you like to confirm this change?`
           }]);
           setIsLoading(false);
           return;
@@ -284,7 +334,6 @@ export const CopilotChat = ({ onClose }) => {
       }
     }
 
-    // 3. Delete deal command (e.g. "Delete deal Soylent Renewal")
     if (msgLower.includes("delete deal") || msgLower.includes("remove deal")) {
       const matchedDeal = deals.find(d => 
         msgLower.includes(d.title.toLowerCase()) || 
@@ -292,17 +341,19 @@ export const CopilotChat = ({ onClose }) => {
       );
 
       if (matchedDeal) {
-        deleteDeal(matchedDeal.id);
+        setPendingAction({
+          type: 'delete',
+          deal: matchedDeal
+        });
         setMessages(prev => [...prev, {
           role: 'assistant',
-          content: `Successfully deleted **${matchedDeal.title}** from your CRM pipeline. Pipeline state updated.`
+          content: `⚠️ Warning: I can delete **${matchedDeal.title}** from your CRM. Would you like to confirm this deletion?`
         }]);
         setIsLoading(false);
         return;
       }
     }
 
-    // 4. Create deal command (e.g. "Create a deal Acme Upgrade for $50000")
     if (msgLower.startsWith("create deal") || msgLower.startsWith("create a deal") || msgLower.startsWith("add deal")) {
       const valMatch = msgLower.match(/\$?(\d[\d,]*)/);
       const dealVal = valMatch ? parseFloat(valMatch[1].replace(/,/g, '')) : 35000;
@@ -325,7 +376,6 @@ export const CopilotChat = ({ onClose }) => {
       return;
     }
 
-    // Unsupported system commands
     if (msgLower.includes("delete database") || msgLower.includes("drop table") || msgLower.includes("export server logs")) {
       setMessages(prev => [...prev, {
         role: 'assistant',
@@ -335,9 +385,7 @@ export const CopilotChat = ({ onClose }) => {
       return;
     }
 
-    // ── ANALYTICS & QUERY HANDLING ──────────────────────────────────────────
     try {
-      // Send live deals from CRMContext as crm_context to guarantee exact live numbers
       const response = await apiClient.post('/ai/chat', {
         message: userMessage,
         conversation_id: 'a1b2c3d4-e5f6-7890-1234-56789abcdef0',
@@ -348,8 +396,6 @@ export const CopilotChat = ({ onClose }) => {
       setMessages(prev => [...prev, { role: 'assistant', content: aiResponse.content }]);
     } catch (error) {
       console.warn('Backend API connection issue, using client-side live CRM analytics:', error);
-      
-      // Data-grounded client-side fallback computation using live deals state
       const fallbackAnalysis = computeClientPipelineAnalytics(userMessage, deals);
       setMessages(prev => [...prev, { role: 'assistant', content: fallbackAnalysis }]);
     } finally {
@@ -364,10 +410,13 @@ export const CopilotChat = ({ onClose }) => {
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 50, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: 50, scale: 0.95 }}
-      className={`fixed ${isMinimized ? 'bottom-6 right-6 w-80 h-16' : 'bottom-6 right-6 w-96 h-150'} bg-[#0E0E10] border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden z-100 transition-all duration-300`}
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.98 }}
+      className={inline
+        ? "w-full h-full bg-[#0E0E10] border-l border-white/10 flex flex-col overflow-hidden"
+        : `fixed ${isMinimized ? 'bottom-6 right-6 w-80 h-16' : 'bottom-6 right-6 w-96 h-150'} bg-[#0E0E10] border border-white/10 rounded-2xl shadow-2xl flex flex-col overflow-hidden z-100 transition-all duration-300`
+      }
     >
       {/* Header */}
       <div className="h-14 border-b border-white/10 bg-white/5 flex items-center justify-between px-4 cursor-pointer shrink-0" onClick={() => setIsMinimized(!isMinimized)}>
@@ -440,6 +489,32 @@ export const CopilotChat = ({ onClose }) => {
                   )}
                 </motion.div>
               ))}
+              
+              {pendingAction && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 8 }} 
+                  animate={{ opacity: 1, y: 0 }} 
+                  className="p-3 bg-blue-950/50 border border-blue-500/40 rounded-xl space-y-2.5 shadow-lg"
+                >
+                  <p className="text-xs font-bold text-blue-300">Confirmation Required for Pipeline Mutation</p>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={confirmPendingAction}
+                      disabled={isLoading}
+                      className="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-lg transition-colors cursor-pointer shadow-md"
+                    >
+                      [Confirm Action]
+                    </button>
+                    <button
+                      onClick={cancelPendingAction}
+                      disabled={isLoading}
+                      className="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-lg transition-colors cursor-pointer"
+                    >
+                      [Cancel]
+                    </button>
+                  </div>
+                </motion.div>
+              )}
               
               {isLoading && (
                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start gap-2.5">

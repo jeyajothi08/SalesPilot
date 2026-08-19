@@ -13,10 +13,15 @@ const STAGES = [
 ];
 
 export default function KanbanBoard({ dealsOverride }) {
-  const { deals, loading, updateDealStage, updateDeal, deleteDeal } = useCRM();
+  const crmContext = useCRM();
+  const deals = Array.isArray(crmContext?.deals) ? crmContext.deals : [];
+  const loading = !!crmContext?.loading;
+  const updateDealStage = crmContext?.updateDealStage || (() => {});
+  const updateDeal = crmContext?.updateDeal || (() => {});
+  const deleteDeal = crmContext?.deleteDeal || (() => {});
   const [selectedDeal, setSelectedDeal] = useState(null);
 
-  const activeDealsList = dealsOverride || deals;
+  const activeDealsList = Array.isArray(dealsOverride) ? dealsOverride : deals;
 
   const handleDragStart = (e, dealId) => {
     e.dataTransfer.setData('dealId', dealId);
@@ -62,6 +67,7 @@ export default function KanbanBoard({ dealsOverride }) {
     <div className="flex gap-5 overflow-x-auto pb-2 h-full items-stretch px-2 relative select-none">
       {STAGES.map(stage => {
         const stageDeals = activeDealsList.filter(d => {
+          if (!d) return false;
           const st = (d.stage || '').toLowerCase();
           return st === stage.id || st === stage.altId || (stage.id === 'lead_in' && st === 'lead') || (stage.id === 'qualified' && st === 'contacted');
         });

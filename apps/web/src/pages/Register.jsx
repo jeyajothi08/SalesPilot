@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bot, ArrowRight, Mail, Lock, User, Building, Phone, AlertCircle } from 'lucide-react';
+import { Bot, ArrowRight, Mail, Lock, User, Building, Phone, AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { authAPI } from '../api/auth';
 import { setTokens } from '../api/apiClient';
@@ -15,6 +15,8 @@ const Register = () => {
     confirmPassword: ''
   });
   
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -91,6 +93,10 @@ const Register = () => {
       navigate('/app', { replace: true });
     } catch (err) {
       console.error('[Register] Registration error:', err);
+      if (!err.response && (err.code === 'ERR_NETWORK' || err.message === 'Network Error')) {
+        setError('Unable to connect to the SalesPilot server. Please ensure the backend server is running and try again.');
+        return;
+      }
       const detail = err.response?.data?.detail || err.message || 'Registration failed. Please try again.';
       setError(typeof detail === 'string' ? detail : JSON.stringify(detail));
     } finally {
@@ -278,19 +284,27 @@ const Register = () => {
                   <input
                     id="password"
                     name="password"
-                    type="password"
+                    type={showPassword ? 'text' : 'password'}
                     autoComplete="new-password"
                     required
                     aria-invalid={!!fieldErrors.password}
                     value={formData.password}
                     onChange={handleChange}
-                    className={`block w-full pl-11 pr-4 h-13 bg-[#0F172A] border ${
+                    className={`block w-full pl-11 pr-11 h-13 bg-[#0F172A] border ${
                       fieldErrors.password 
                         ? 'border-[#EF4444] focus:ring-2 focus:ring-[#EF4444]/30' 
                         : 'border-[#263247] hover:border-slate-600 focus:border-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6]/20'
                     } rounded-xl text-[#F8FAFC] placeholder-[#64748B] text-sm focus:outline-none transition-all shadow-inner`}
                     placeholder="Create a password"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#94A3B8] hover:text-[#F8FAFC] transition-colors cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
                 </div>
                 {fieldErrors.password && (
                   <p className="mt-1.5 text-xs text-[#F87171] font-medium">{fieldErrors.password}</p>
@@ -309,19 +323,27 @@ const Register = () => {
                   <input
                     id="confirmPassword"
                     name="confirmPassword"
-                    type="password"
+                    type={showConfirmPassword ? 'text' : 'password'}
                     autoComplete="new-password"
                     required
                     aria-invalid={!!fieldErrors.confirmPassword}
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    className={`block w-full pl-11 pr-4 h-13 bg-[#0F172A] border ${
+                    className={`block w-full pl-11 pr-11 h-13 bg-[#0F172A] border ${
                       fieldErrors.confirmPassword 
                         ? 'border-[#EF4444] focus:ring-2 focus:ring-[#EF4444]/30' 
                         : 'border-[#263247] hover:border-slate-600 focus:border-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6]/20'
                     } rounded-xl text-[#F8FAFC] placeholder-[#64748B] text-sm focus:outline-none transition-all shadow-inner`}
                     placeholder="Confirm your password"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-[#94A3B8] hover:text-[#F8FAFC] transition-colors cursor-pointer"
+                  >
+                    {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
                 </div>
                 {fieldErrors.confirmPassword && (
                   <p className="mt-1.5 text-xs text-[#F87171] font-medium">{fieldErrors.confirmPassword}</p>

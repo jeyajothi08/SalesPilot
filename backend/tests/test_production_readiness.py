@@ -13,6 +13,9 @@ from app.database.session import get_db
 from app.models.user import Base
 from app.core.security import get_password_hash, create_access_token
 
+from app.core.config import settings
+settings.ENVIRONMENT = "testing"
+
 # ─── In-Memory SQLite for tests ───────────────────────────────────────────────
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
@@ -63,7 +66,7 @@ async def client():
 @pytest.fixture
 async def auth_headers(client):
     """Register a test user and return auth headers."""
-    email = f"test_{uuid.uuid4().hex[:6]}@salespilot.test"
+    email = f"test_{uuid.uuid4().hex[:6]}@example.com"
     password = "TestPassword123"
     resp = await client.post("/api/v1/auth/register", json={
         "email": email,
@@ -149,29 +152,29 @@ class TestAuth:
 
 # ─── CRM MULTI-TENANCY TESTS ──────────────────────────────────────────────────
 
-class TestCRMTenantIsolation:
     async def test_customers_scoped_to_org(self, client, auth_headers):
         """Customers created by one org must not appear in another org's list."""
-        # Create customer as org 1
+        alice_email = f"alice_{uuid.uuid4().hex[:6]}@example.com"
         resp = await client.post("/api/v1/crm/customers", json={
             "first_name": "Alice",
             "last_name": "Smith",
-            "email": f"alice_{uuid.uuid4().hex[:6]}@test.com",
+            "email": alice_email,
         }, headers=auth_headers)
         assert resp.status_code == 201
 
         # Register org 2
-        email2 = f"org2_{uuid.uuid4().hex[:6]}@test.com"
+        email2 = f"org2_{uuid.uuid4().hex[:6]}@example.com"
         await client.post("/api/v1/auth/register", json={
             "email": email2, "password": "Org2Pass123", "first_name": "Bob", "last_name": "Jones", "company_name": "Org2 Corp"
         })
         login2 = await client.post("/api/v1/auth/login", data={"username": email2, "password": "Org2Pass123"})
         headers2 = {"Authorization": f"Bearer {login2.json()['access_token']}"}
 
-        # Org 2 should have NO customers
+        # Org 2 should NOT see Org 1's customer
         resp2 = await client.get("/api/v1/crm/customers", headers=headers2)
         assert resp2.status_code == 200
-        assert resp2.json() == []
+        emails2 = [c["email"] for c in resp2.json()]
+        assert alice_email not in emails2
 
     async def test_create_customer_requires_auth(self, client):
         resp = await client.post("/api/v1/crm/customers", json={

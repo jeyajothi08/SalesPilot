@@ -1,19 +1,20 @@
-﻿import pytest
+import pytest
 import uuid
 from httpx import AsyncClient
 
 @pytest.mark.asyncio
 async def test_create_customer(authorized_client: AsyncClient):
+    email = f"john_{uuid.uuid4().hex[:6]}@example.com"
     response = await authorized_client.post("/api/v1/crm/customers", json={
         "first_name": "John",
         "last_name": "Doe",
-        "email": "john.doe@example.com",
+        "email": email,
         "phone": "1234567890",
         "job_title": "CEO"
     })
     assert response.status_code == 201
     data = response.json()
-    assert data["email"] == "john.doe@example.com"
+    assert data["email"] == email
     return data["id"]
 
 @pytest.mark.asyncio

@@ -17,6 +17,7 @@ export const Navbar = () => {
       <div className="hidden md:flex gap-8 text-sm font-medium text-gray-400 pointer-events-auto">
         <button onClick={() => navigate('/features')} className="hover:text-white transition-colors cursor-pointer border-none bg-transparent">Features</button>
         <button onClick={() => navigate('/automation')} className="hover:text-white transition-colors cursor-pointer border-none bg-transparent">Automation</button>
+        <button onClick={() => navigate('/features/voice-calling')} className="hover:text-white transition-colors cursor-pointer border-none bg-transparent">Calling</button>
         <button onClick={() => navigate('/pricing')} className="hover:text-white transition-colors cursor-pointer border-none bg-transparent">Pricing</button>
       </div>
       <div className="flex items-center gap-4 pointer-events-auto">

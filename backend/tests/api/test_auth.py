@@ -1,8 +1,11 @@
-﻿import pytest
+import pytest
 from httpx import AsyncClient
 from app.models.user import User
 from app.models.iam import Organization
 from sqlalchemy.future import select
+from app.core.config import settings
+
+settings.ENVIRONMENT = "testing"
 
 @pytest.mark.asyncio
 async def test_register_user(client: AsyncClient, db_session):
@@ -117,7 +120,7 @@ async def test_refresh_token(client: AsyncClient):
     refresh_token = login_res.json()["refresh_token"]
     
     # Refresh token
-    response = await client.post(f"/api/v1/auth/refresh?refresh_token={refresh_token}")
+    response = await client.post("/api/v1/auth/refresh", json={"refresh_token": refresh_token})
     assert response.status_code == 200
     data = response.json()
     assert "access_token" in data
@@ -142,11 +145,11 @@ async def test_logout(client: AsyncClient):
     refresh_token = login_res.json()["refresh_token"]
     
     # Logout
-    response = await client.post(f"/api/v1/auth/logout?refresh_token={refresh_token}")
+    response = await client.post("/api/v1/auth/logout", json={"refresh_token": refresh_token})
     assert response.status_code == 200
     
     # Try to refresh with revoked token
-    refresh_res = await client.post(f"/api/v1/auth/refresh?refresh_token={refresh_token}")
+    refresh_res = await client.post("/api/v1/auth/refresh", json={"refresh_token": refresh_token})
     assert refresh_res.status_code == 401
 
 

@@ -228,9 +228,11 @@ export const CRMProvider = ({ children }) => {
     };
   }, [deals]);
 
+  const safeDeals = Array.isArray(deals) ? deals : [];
+
   return (
     <CRMContext.Provider value={{
-      deals,
+      deals: safeDeals,
       loading,
       error,
       refreshDeals: loadInitialDeals,
