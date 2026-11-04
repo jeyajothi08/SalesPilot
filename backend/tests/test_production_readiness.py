@@ -30,7 +30,10 @@ async def override_get_db():
         yield session
 
 
-app.dependency_overrides[get_db] = override_get_db
+# NOTE: do not register this override at import time. `tests/conftest.py` already
+# installs a session-wide override, and importing this module would silently
+# replace it, pointing every test at a different (empty, in-memory) database —
+# which made the rest of the suite fail with "no such table: users".
 
 
 @pytest.fixture(scope="session", autouse=True)

@@ -9,9 +9,12 @@
  */
 import axios from 'axios';
 
+// Default to a relative URL so browser requests go through the same origin and
+// are proxied by Vite (server.proxy) to the backend. Calling 127.0.0.1 from the
+// browser only works when the browser runs on the same machine as the backend.
 const BASE_URL = import.meta.env.VITE_API_URL
-  ? `${import.meta.env.VITE_API_URL}/api/v1`
-  : 'http://127.0.0.1:8000/api/v1';
+  ? `${import.meta.env.VITE_API_URL.replace(/\/$/, '')}/api/v1`
+  : '/api/v1';
 
 const getAccessToken = () => localStorage.getItem('access_token');
 const getRefreshToken = () => localStorage.getItem('refresh_token');
